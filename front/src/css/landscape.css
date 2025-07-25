@@ -1,0 +1,16 @@
+/* Running Man Animation */
+@keyframes runAcrossScreen {
+  0% {
+    transform: translateX(-200px);
+  }
+  85% {
+    transform: translateX(calc(100vw + 200px));
+  }
+  100% {
+    transform: translateX(calc(100vw + 200px));
+  }
+}
+
+.running-landscape-animation {
+  animation: runAcrossScreen 9s linear infinite;
+}

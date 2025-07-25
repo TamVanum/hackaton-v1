@@ -1,0 +1,86 @@
+/* Parallax Container */
+.parallax-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 70%, #98FB98 100%);
+}
+
+/* Base Parallax Layer */
+.parallax-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  will-change: transform;
+}
+
+.parallax-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Background Layer - Slowest */
+.parallax-background {
+  animation: parallaxSlow 60s linear infinite;
+  z-index: 1;
+}
+
+/* Clouds Layer - Medium speed */
+.parallax-clouds {
+  animation: parallaxMedium 40s linear infinite;
+  z-index: 2;
+}
+
+/* Mountain Layer - Medium-fast speed */
+.parallax-mountain {
+  animation: parallaxFast 30s linear infinite;
+  z-index: 3;
+}
+
+/* Pipes Layer - Fastest (foreground) */
+.parallax-pipes {
+  animation: parallaxVeryFast 20s linear infinite;
+  z-index: 4;
+}
+
+/* Parallax Animations */
+@keyframes parallaxSlow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes parallaxMedium {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes parallaxFast {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes parallaxVeryFast {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+} 
