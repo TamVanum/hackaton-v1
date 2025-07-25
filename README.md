@@ -1,5 +1,23 @@
 # Hackathon PVC - Registration Platform - (In Development)
 
+## Welcome to Hackaton NameYetNoDefined!
+
+<table>
+  <tr>
+    <td>
+      <p>
+        Cuz being busy its not enogh, get ready for the HackatonNameNotDefined.<br>
+        it's all about creativity, building shitty projects, expanding your portfolio (if possible), and creating something awesome to show off on LinkedIn.<br>
+        I can’t promise there will be prizes, but <strong>beer is guaranteed 😎</strong> — Enjoy!
+      </p>
+    </td>
+    <td>
+      <img width="245" height="259" alt="image" src="https://github.com/user-attachments/assets/cee1c775-68b9-448b-9d93-528e1e509ff0" />
+    </td>
+  </tr>
+</table>
+
+
 ## Navigation
 - [Run The Project](#run)
 - [Go To Context](#context)
