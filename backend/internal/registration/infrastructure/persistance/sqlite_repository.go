@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
 	"hackathon-pvc-backend/internal/registration/application/ports"
 	"hackathon-pvc-backend/internal/registration/domain"
@@ -23,19 +24,13 @@ func (r *SQLiteRepository) Save(ctx context.Context, reg *domain.Registration) (
 		VALUES (?, ?, ?, ?, ?, ?)
 	`
 
-	var teammateValue *string
-	if reg.Teammate().HasValue() {
-		value := reg.Teammate().Value()
-		teammateValue = value
-	}
-
 	result, err := r.db.ExecContext(ctx, query,
-		reg.Name().Value(),
-		reg.Nickname().Value(),
-		reg.ProjectIdea().Value(),
-		teammateValue,
-		reg.Role().Value(),
-		reg.CreatedAt().Value(),
+		reg.Name(),
+		reg.Nickname(),
+		reg.ProjectIdea(),
+		reg.DesiredTeammate(),
+		reg.Role(),
+		reg.CreatedAt().Format(time.RFC3339),
 	)
 	if err != nil {
 		return nil, err
@@ -66,9 +61,9 @@ func (r *SQLiteRepository) FindByID(ctx context.Context, id int) (*domain.Regist
 	var dbID int
 	var name, nickname, projectIdea, role string
 	var teammate *string
-	var createdAt string
+	var createdAtStr string
 
-	err := row.Scan(&dbID, &name, &nickname, &projectIdea, &teammate, &role, &createdAt)
+	err := row.Scan(&dbID, &name, &nickname, &projectIdea, &teammate, &role, &createdAtStr)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, errors.New("registration not found")
@@ -86,6 +81,13 @@ func (r *SQLiteRepository) FindByID(ctx context.Context, id int) (*domain.Regist
 		return nil, err
 	}
 
+	// Parse and set created_at
+	createdAt, err := time.Parse(time.RFC3339, createdAtStr)
+	if err != nil {
+		return nil, err
+	}
+	reg.SetCreatedAt(createdAt)
+
 	return reg, nil
 }
 
@@ -101,9 +103,9 @@ func (r *SQLiteRepository) FindByNickname(ctx context.Context, nickname string) 
 	var dbID int
 	var name, dbNickname, projectIdea, role string
 	var teammate *string
-	var createdAt string
+	var createdAtStr string
 
-	err := row.Scan(&dbID, &name, &dbNickname, &projectIdea, &teammate, &role, &createdAt)
+	err := row.Scan(&dbID, &name, &dbNickname, &projectIdea, &teammate, &role, &createdAtStr)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, errors.New("registration not found")
@@ -120,6 +122,13 @@ func (r *SQLiteRepository) FindByNickname(ctx context.Context, nickname string) 
 	if err != nil {
 		return nil, err
 	}
+
+	// Parse and set created_at
+	createdAt, err := time.Parse(time.RFC3339, createdAtStr)
+	if err != nil {
+		return nil, err
+	}
+	reg.SetCreatedAt(createdAt)
 
 	return reg, nil
 }
@@ -143,9 +152,9 @@ func (r *SQLiteRepository) FindAll(ctx context.Context) ([]*domain.Registration,
 		var dbID int
 		var name, nickname, projectIdea, role string
 		var teammate *string
-		var createdAt string
+		var createdAtStr string
 
-		err := rows.Scan(&dbID, &name, &nickname, &projectIdea, &teammate, &role, &createdAt)
+		err := rows.Scan(&dbID, &name, &nickname, &projectIdea, &teammate, &role, &createdAtStr)
 		if err != nil {
 			return nil, err
 		}
@@ -159,6 +168,13 @@ func (r *SQLiteRepository) FindAll(ctx context.Context) ([]*domain.Registration,
 		if err != nil {
 			return nil, err
 		}
+
+		// Parse and set created_at
+		createdAt, err := time.Parse(time.RFC3339, createdAtStr)
+		if err != nil {
+			return nil, err
+		}
+		reg.SetCreatedAt(createdAt)
 
 		registrations = append(registrations, reg)
 	}
