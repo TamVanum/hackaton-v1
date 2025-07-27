@@ -1,91 +1,92 @@
 package domain
 
 import (
-	"hackathon-pvc-backend/internal/registration/domain/valueobjects"
+	"errors"
+	"strings"
+	"time"
 )
 
 // Registration is the aggregate root
 type Registration struct {
-	id          *valueobjects.RegistrationID
-	name        *valueobjects.Name
-	nickname    *valueobjects.Nickname
-	projectIdea *valueobjects.ProjectIdea
-	teammate    *valueobjects.Teammate
-	role        *valueobjects.Role
-	createdAt   *valueobjects.CreatedAt
+	id              int
+	name            string
+	nickname        string
+	projectIdea     string
+	desiredTeammate *string
+	role            string
+	createdAt       time.Time
 }
 
-func NewRegistration(name, nickname, projectIdea string, teammate *string, role string) (*Registration, error) {
-	nameVO, err := valueobjects.NewName(name)
-	if err != nil {
-		return nil, err
+func NewRegistration(name, nickname, projectIdea string, desiredTeammate *string, role string) (*Registration, error) {
+	// Validate name
+	if strings.TrimSpace(name) == "" {
+		return nil, errors.New("name cannot be empty")
 	}
 
-	nicknameVO, err := valueobjects.NewNickname(nickname)
-	if err != nil {
-		return nil, err
+	// Validate nickname
+	if strings.TrimSpace(nickname) == "" {
+		return nil, errors.New("nickname cannot be empty")
 	}
 
-	projectIdeaVO, err := valueobjects.NewProjectIdea(projectIdea)
-	if err != nil {
-		return nil, err
+	// Validate project idea
+	if strings.TrimSpace(projectIdea) == "" {
+		return nil, errors.New("project idea cannot be empty")
 	}
 
-	teammateVO, err := valueobjects.NewTeammate(teammate)
-	if err != nil {
-		return nil, err
-	}
-
-	roleVO, err := valueobjects.NewRole(role)
-	if err != nil {
-		return nil, err
+	// Validate role
+	if strings.TrimSpace(role) == "" {
+		return nil, errors.New("role cannot be empty")
 	}
 
 	return &Registration{
-		name:        nameVO,
-		nickname:    nicknameVO,
-		projectIdea: projectIdeaVO,
-		teammate:    teammateVO,
-		role:        roleVO,
-		createdAt:   valueobjects.NewCreatedAtNow(),
+		name:            strings.TrimSpace(name),
+		nickname:        strings.TrimSpace(nickname),
+		projectIdea:     strings.TrimSpace(projectIdea),
+		desiredTeammate: desiredTeammate,
+		role:            strings.TrimSpace(role),
+		createdAt:       time.Now(),
 	}, nil
 }
 
 // Getters
-func (r *Registration) ID() *valueobjects.RegistrationID {
+func (r *Registration) ID() int {
 	return r.id
 }
 
-func (r *Registration) Name() *valueobjects.Name {
+func (r *Registration) Name() string {
 	return r.name
 }
 
-func (r *Registration) Nickname() *valueobjects.Nickname {
+func (r *Registration) Nickname() string {
 	return r.nickname
 }
 
-func (r *Registration) ProjectIdea() *valueobjects.ProjectIdea {
+func (r *Registration) ProjectIdea() string {
 	return r.projectIdea
 }
 
-func (r *Registration) Teammate() *valueobjects.Teammate {
-	return r.teammate
+func (r *Registration) DesiredTeammate() *string {
+	return r.desiredTeammate
 }
 
-func (r *Registration) Role() *valueobjects.Role {
+func (r *Registration) Role() string {
 	return r.role
 }
 
-func (r *Registration) CreatedAt() *valueobjects.CreatedAt {
+func (r *Registration) CreatedAt() time.Time {
 	return r.createdAt
 }
 
 // SetID is used by repository after persistence
 func (r *Registration) SetID(id int) error {
-	idVO, err := valueobjects.NewRegistrationID(id)
-	if err != nil {
-		return err
+	if id <= 0 {
+		return errors.New("id must be positive")
 	}
-	r.id = idVO
+	r.id = id
 	return nil
+}
+
+// SetCreatedAt is used by repository when loading from database
+func (r *Registration) SetCreatedAt(createdAt time.Time) {
+	r.createdAt = createdAt
 }

@@ -31,7 +31,7 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 		req.Name,
 		req.Nickname,
 		req.ProjectIdea,
-		req.Teammate,
+		req.DesiredTeammate,
 		req.Role,
 	)
 	if err != nil {
@@ -54,13 +54,13 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 
 func (h *RegistrationHandler) toRegistrationResponse(reg *domain.Registration) RegistrationResponse {
 	return RegistrationResponse{
-		ID:          reg.ID().Value(),
-		Name:        reg.Name().Value(),
-		Nickname:    reg.Nickname().Value(),
-		ProjectIdea: reg.ProjectIdea().Value(),
-		Teammate:    reg.Teammate().Value(),
-		Role:        reg.Role().Value(),
-		CreatedAt:   reg.CreatedAt().String(),
+		ID:              reg.ID(),
+		Name:            reg.Name(),
+		Nickname:        reg.Nickname(),
+		ProjectIdea:     reg.ProjectIdea(),
+		DesiredTeammate: reg.DesiredTeammate(),
+		Role:            reg.Role(),
+		CreatedAt:       reg.CreatedAt().Format("2006-01-02T15:04:05Z07:00"),
 	}
 }
 
