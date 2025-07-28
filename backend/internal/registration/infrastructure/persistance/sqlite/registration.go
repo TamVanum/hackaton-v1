@@ -13,7 +13,7 @@ type SQLiteRepository struct {
 	db *sql.DB
 }
 
-func NewSQLiteRepository(db *sql.DB) ports.RepositoryPort {
+func NewSQLiteRepository(db *sql.DB) ports.RegistrationRepositoryPort {
 	return &SQLiteRepository{db: db}
 }
 

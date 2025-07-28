@@ -7,10 +7,10 @@ import (
 )
 
 type RegistrationService struct {
-	repository ports.RepositoryPort
+	repository ports.RegistrationRepositoryPort
 }
 
-func NewRegistrationService(repository ports.RepositoryPort) *RegistrationService {
+func NewRegistrationService(repository ports.RegistrationRepositoryPort) *RegistrationService {
 	return &RegistrationService{
 		repository: repository,
 	}

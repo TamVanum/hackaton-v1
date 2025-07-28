@@ -5,6 +5,6 @@ import (
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
-type RepositoryPort interface {
+type RegistrationRepositoryPort interface {
 	Save(ctx context.Context, registration *domain.Registration) (*domain.Registration, error)
 }
