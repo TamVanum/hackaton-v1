@@ -7,7 +7,7 @@ function Hero() {
             <div className="relative z-10 container mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-screen text-center">
                 <div className="mb-8">
                     <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                        Hackathon Comisteichon PVC
+                        Hackathon PVC
                     </h1>
                     <p className="text-2xl md:text-3xl font-light mb-4 text-blue-200">
                         Code • Create • Compete

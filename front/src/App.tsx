@@ -3,6 +3,7 @@ import Hero from './components/landing/Hero'
 import About from './components/landing/About'
 import Prizes from './components/landing/Prizes'
 import Registration from './components/landing/Registration'
+import Landscape from './components/landing/Landscape'
 
 function App() {
   return (
@@ -25,6 +26,9 @@ function App() {
       </nav>
 
       <Hero />  
+    <section id="landscape">
+                <Landscape />
+            </section>
       <section id="about">
         <About />
       </section>

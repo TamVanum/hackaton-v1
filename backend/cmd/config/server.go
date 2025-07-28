@@ -44,7 +44,7 @@ func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status": "ok", "message": "Hackathon PVC API is running - ElWazy Pro"}`))
+	w.Write([]byte(`{"status": "ok", "message": "Hackathon PVC API is running - (╯°□°)╯︵ ┻━┻"}`))
 }
 
 func healthHtmlRenderHandler(w http.ResponseWriter, r *http.Request) {
