@@ -13,7 +13,7 @@ type Dependencies struct {
 }
 
 func WireDependencies(db *sql.DB) *Dependencies {
-	repository := persistance.NewSQLiteRepository(db)
+	repository := persistance.NewSqlRegistrationRepository(db)
 
 	registrationService := services.NewRegistrationService(repository)
 

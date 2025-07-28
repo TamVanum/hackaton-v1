@@ -9,15 +9,15 @@ import (
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
-type SQLiteRepository struct {
+type SqlRegistrationRepository struct {
 	db *sql.DB
 }
 
-func NewSQLiteRepository(db *sql.DB) ports.RegistrationRepositoryPort {
-	return &SQLiteRepository{db: db}
+func NewSqlRegistrationRepository(db *sql.DB) ports.RegistrationRepositoryPort {
+	return &SqlRegistrationRepository{db: db}
 }
 
-func (r *SQLiteRepository) Save(ctx context.Context, reg *domain.Registration) (*domain.Registration, error) {
+func (r *SqlRegistrationRepository) Save(ctx context.Context, reg *domain.Registration) (*domain.Registration, error) {
 	query := `
 		INSERT INTO registrations (name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?)

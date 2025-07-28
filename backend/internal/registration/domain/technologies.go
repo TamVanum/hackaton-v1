@@ -2,24 +2,24 @@ package domain
 
 import "errors"
 
-type Technologies struct {
+type Technology struct {
 	id   int
 	name string
 }
 
-func NewTechnologies(id int, name string) *Technologies {
-	return &Technologies{id: id, name: name}
+func NewTechnology(id int, name string) *Technology {
+	return &Technology{id: id, name: name}
 }
 
-func (t *Technologies) ID() int {
+func (t *Technology) ID() int {
 	return t.id
 }
 
-func (t *Technologies) Name() string {
+func (t *Technology) Name() string {
 	return t.name
 }
 
-func (t *Technologies) SetID(id int) error {
+func (t *Technology) SetID(id int) error {
 	if id <= 0 {
 		return errors.New("id must be greater than 0")
 	}
@@ -27,7 +27,7 @@ func (t *Technologies) SetID(id int) error {
 	return nil
 }
 
-func (t *Technologies) SetName(name string) error {
+func (t *Technology) SetName(name string) error {
 	if name == "" {
 		return errors.New("name cannot be empty")
 	}
