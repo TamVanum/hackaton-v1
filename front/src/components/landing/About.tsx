@@ -1,4 +1,15 @@
+import { useState, useEffect } from 'react'
+
 function About() {
+    const [healthStatus, setHealthStatus] = useState('')
+
+    useEffect(() => {
+        fetch('https://api-hackathon.comisteichon.cl/api/health')
+            .then(res => res.json())
+            .then(data => setHealthStatus(data.message))
+            .catch(() => setHealthStatus('API unavailable'))
+    }, [])
+
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-6">
@@ -7,8 +18,7 @@ function About() {
                         What is Hackathon PVC?
                     </h2>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        A 48-hour intensive coding marathon where developers, designers, and innovators 
-                        come together to build groundbreaking solutions and compete for amazing prizes.
+                        {healthStatus || 'Loading...'}
                     </p>
                 </div>
 
@@ -81,4 +91,4 @@ function About() {
     )
 }
 
-export default About 
+export default About
