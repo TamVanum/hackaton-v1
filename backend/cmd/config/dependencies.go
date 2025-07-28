@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"hackathon-pvc-backend/internal/registration/application/services"
-	"hackathon-pvc-backend/internal/registration/infrastructure/persistance"
+	repo "hackathon-pvc-backend/internal/registration/infrastructure/persistance/sql"
 	"hackathon-pvc-backend/internal/registration/infrastructure/rest"
 )
 
@@ -13,7 +13,7 @@ type Dependencies struct {
 }
 
 func WireDependencies(db *sql.DB) *Dependencies {
-	repository := persistance.NewSqlRegistrationRepository(db)
+	repository := repo.NewSqlRegistrationRepository(db)
 
 	registrationService := services.NewRegistrationService(repository)
 
