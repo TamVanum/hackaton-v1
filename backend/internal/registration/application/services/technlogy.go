@@ -1,0 +1,28 @@
+package services
+
+import (
+	"context"
+	"hackathon-pvc-backend/internal/registration/domain"
+)
+
+type TechnologyService struct {
+	technologyRepository domain.TechnologyRepositoryPort
+}
+
+func NewTechnologyService(technologyRepository domain.TechnologyRepositoryPort) *TechnologyService {
+	return &TechnologyService{
+		technologyRepository: technologyRepository,
+	}
+}
+
+func (s *TechnologyService) Get(ctx context.Context) ([]*domain.Technology, error) {
+	return s.technologyRepository.FindAll(ctx)
+}
+
+func (s *TechnologyService) GetByIDs(ctx context.Context, ids []int) ([]*domain.Technology, error) {
+	return s.technologyRepository.BulkFindByIDs(ctx, ids)
+}
+
+func (s *TechnologyService) Save(ctx context.Context, technology *domain.Technology) (*domain.Technology, error) {
+	return s.technologyRepository.Save(ctx, technology)
+}
