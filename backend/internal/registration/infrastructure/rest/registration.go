@@ -41,10 +41,8 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 		return
 	}
 
-	// Convert to response DTO
 	response := h.toRegistrationResponse(registration, req)
 
-	// Write success response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{

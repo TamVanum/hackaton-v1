@@ -34,3 +34,56 @@ func (r *SqlRoleRepository) Save(ctx context.Context, role *domain.Role) (*domai
 
 	return role, nil
 }
+
+func (r *SqlRoleRepository) FindAll(ctx context.Context) ([]*domain.Role, error) {
+	query := `
+		SELECT id, name
+		FROM roles
+	`
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	roles := []*domain.Role{}
+
+	for rows.Next() {
+		var role domain.Role
+		if err := rows.Scan(); err != nil {
+			return nil, err
+		}
+		roles = append(roles, &role)
+	}
+
+	return roles, nil
+}
+
+func (r *SqlRoleRepository) BulkFindByIDs(ctx context.Context, ids []int) ([]*domain.Role, error) {
+	query := `
+		SELECT id, name
+		FROM roles
+		WHERE id IN (?)
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	roles := []*domain.Role{}
+
+	for rows.Next() {
+		var role domain.Role
+		if err := rows.Scan(); err != nil {
+			return nil, err
+		}
+		roles = append(roles, &role)
+	}
+
+	return roles, nil
+}
