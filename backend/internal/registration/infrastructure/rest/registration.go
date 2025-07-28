@@ -26,7 +26,7 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 		return
 	}
 
-	registration, err := h.service.RegisterParticipant(
+	registration, err := h.service.Save(
 		r.Context(),
 		req.Name,
 		req.Nickname,

@@ -13,9 +13,13 @@ type Dependencies struct {
 }
 
 func WireDependencies(db *sql.DB) *Dependencies {
-	repository := repo.NewSqlRegistrationRepository(db)
+	registrationRepository := repo.NewSqlRegistrationRepository(db)
+	// roleRepository := repo.NewSqlRoleRepository(db)
+	// technologyRepository := repo.NewSqlTechnologyRepository(db)
 
-	registrationService := services.NewRegistrationService(repository)
+	registrationService := services.NewRegistrationService(registrationRepository)
+	// roleService := services.NewRoleService(roleRepository)
+	// technologyService := services.NewTechnologyService(technologyRepository)
 
 	registrationHandler := rest.NewRegistrationHandler(registrationService)
 
