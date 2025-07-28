@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"errors"
 	"hackathon-pvc-backend/internal/registration/application/ports"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
@@ -17,36 +16,11 @@ func NewRegistrationService(repository ports.RepositoryPort) *RegistrationServic
 	}
 }
 
-func (s *RegistrationService) RegisterParticipant(ctx context.Context, name, nickname, projectIdea string, teammate *string, role string) (*domain.Registration, error) {
-	_, err := s.repository.FindByNickname(ctx, nickname)
-	if err == nil {
-		return nil, errors.New("nickname already taken")
-	}
-
-	registration, err := domain.NewRegistration(name, nickname, projectIdea, teammate, role)
+func (s *RegistrationService) RegisterParticipant(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*domain.Registration, error) {
+	registration, err := domain.NewRegistration(name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
 	if err != nil {
 		return nil, err
 	}
 
 	return s.repository.Save(ctx, registration)
-}
-
-func (s *RegistrationService) GetRegistration(ctx context.Context, id int) (*domain.Registration, error) {
-	return s.repository.FindByID(ctx, id)
-}
-
-func (s *RegistrationService) GetAllRegistrations(ctx context.Context) ([]*domain.Registration, error) {
-	return s.repository.FindAll(ctx)
-}
-
-func (s *RegistrationService) GetRegistrationStats(ctx context.Context) (map[string]interface{}, error) {
-	count, err := s.repository.Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return map[string]interface{}{
-		"total_registrations": count,
-		"available_spots":     500 - count,
-	}, nil
 }

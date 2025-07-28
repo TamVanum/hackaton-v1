@@ -2,22 +2,24 @@ package domain
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 	"time"
 )
 
-// Registration is the aggregate root
 type Registration struct {
 	id              int
 	name            string
 	nickname        string
+	email           string
+	region          string
 	projectIdea     string
+	teamPreference  bool
 	desiredTeammate *string
-	role            string
 	createdAt       time.Time
 }
 
-func NewRegistration(name, nickname, projectIdea string, desiredTeammate *string, role string) (*Registration, error) {
+func NewRegistration(name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Registration, error) {
 	// Validate name
 	if strings.TrimSpace(name) == "" {
 		return nil, errors.New("name cannot be empty")
@@ -28,24 +30,41 @@ func NewRegistration(name, nickname, projectIdea string, desiredTeammate *string
 		return nil, errors.New("nickname cannot be empty")
 	}
 
+	// Validate email
+	email = strings.TrimSpace(email)
+	if email == "" {
+		return nil, errors.New("email cannot be empty")
+	}
+	if !isValidEmail(email) {
+		return nil, errors.New("invalid email format")
+	}
+
+	// Validate region
+	if strings.TrimSpace(region) == "" {
+		return nil, errors.New("region cannot be empty")
+	}
+
 	// Validate project idea
 	if strings.TrimSpace(projectIdea) == "" {
 		return nil, errors.New("project idea cannot be empty")
 	}
 
-	// Validate role
-	if strings.TrimSpace(role) == "" {
-		return nil, errors.New("role cannot be empty")
-	}
-
 	return &Registration{
 		name:            strings.TrimSpace(name),
 		nickname:        strings.TrimSpace(nickname),
+		email:           email,
+		region:          strings.TrimSpace(region),
 		projectIdea:     strings.TrimSpace(projectIdea),
+		teamPreference:  teamPreference,
 		desiredTeammate: desiredTeammate,
-		role:            strings.TrimSpace(role),
 		createdAt:       time.Now(),
 	}, nil
+}
+
+// isValidEmail validates email format using regex
+func isValidEmail(email string) bool {
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return emailRegex.MatchString(email)
 }
 
 // Getters
@@ -61,23 +80,30 @@ func (r *Registration) Nickname() string {
 	return r.nickname
 }
 
+func (r *Registration) Email() string {
+	return r.email
+}
+
+func (r *Registration) Region() string {
+	return r.region
+}
+
 func (r *Registration) ProjectIdea() string {
 	return r.projectIdea
+}
+
+func (r *Registration) TeamPreference() bool {
+	return r.teamPreference
 }
 
 func (r *Registration) DesiredTeammate() *string {
 	return r.desiredTeammate
 }
 
-func (r *Registration) Role() string {
-	return r.role
-}
-
 func (r *Registration) CreatedAt() time.Time {
 	return r.createdAt
 }
 
-// SetID is used by repository after persistence
 func (r *Registration) SetID(id int) error {
 	if id <= 0 {
 		return errors.New("id must be positive")
@@ -86,7 +112,6 @@ func (r *Registration) SetID(id int) error {
 	return nil
 }
 
-// SetCreatedAt is used by repository when loading from database
 func (r *Registration) SetCreatedAt(createdAt time.Time) {
 	r.createdAt = createdAt
 }

@@ -30,9 +30,11 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 		r.Context(),
 		req.Name,
 		req.Nickname,
+		req.Email,
+		req.Region,
 		req.ProjectIdea,
+		req.TeamPreference,
 		req.DesiredTeammate,
-		req.Role,
 	)
 	if err != nil {
 		h.writeErrorResponse(w, http.StatusBadRequest, "registration failed", err.Error())
@@ -57,9 +59,10 @@ func (h *RegistrationHandler) toRegistrationResponse(reg *domain.Registration) R
 		ID:              reg.ID(),
 		Name:            reg.Name(),
 		Nickname:        reg.Nickname(),
+		Email:           reg.Email(),
+		Region:          reg.Region(),
 		ProjectIdea:     reg.ProjectIdea(),
 		DesiredTeammate: reg.DesiredTeammate(),
-		Role:            reg.Role(),
 		CreatedAt:       reg.CreatedAt().Format("2006-01-02T15:04:05Z07:00"),
 	}
 }

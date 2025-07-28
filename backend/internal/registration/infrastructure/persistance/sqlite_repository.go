@@ -3,7 +3,6 @@ package persistance
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"time"
 
 	"hackathon-pvc-backend/internal/registration/application/ports"
@@ -20,16 +19,18 @@ func NewSQLiteRepository(db *sql.DB) ports.RepositoryPort {
 
 func (r *SQLiteRepository) Save(ctx context.Context, reg *domain.Registration) (*domain.Registration, error) {
 	query := `
-		INSERT INTO registrations (name, nickname, project_idea, teammate, role, created_at)
-		VALUES (?, ?, ?, ?, ?, ?)
+		INSERT INTO registrations (name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	result, err := r.db.ExecContext(ctx, query,
 		reg.Name(),
 		reg.Nickname(),
+		reg.Email(),
+		reg.Region(),
 		reg.ProjectIdea(),
+		reg.TeamPreference(),
 		reg.DesiredTeammate(),
-		reg.Role(),
 		reg.CreatedAt().Format(time.RFC3339),
 	)
 	if err != nil {
@@ -47,151 +48,4 @@ func (r *SQLiteRepository) Save(ctx context.Context, reg *domain.Registration) (
 	}
 
 	return reg, nil
-}
-
-func (r *SQLiteRepository) FindByID(ctx context.Context, id int) (*domain.Registration, error) {
-	query := `
-		SELECT id, name, nickname, project_idea, teammate, role, created_at
-		FROM registrations
-		WHERE id = ?
-	`
-
-	row := r.db.QueryRowContext(ctx, query, id)
-
-	var dbID int
-	var name, nickname, projectIdea, role string
-	var teammate *string
-	var createdAtStr string
-
-	err := row.Scan(&dbID, &name, &nickname, &projectIdea, &teammate, &role, &createdAtStr)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("registration not found")
-		}
-		return nil, err
-	}
-
-	reg, err := domain.NewRegistration(name, nickname, projectIdea, teammate, role)
-	if err != nil {
-		return nil, err
-	}
-
-	err = reg.SetID(dbID)
-	if err != nil {
-		return nil, err
-	}
-
-	// Parse and set created_at
-	createdAt, err := time.Parse(time.RFC3339, createdAtStr)
-	if err != nil {
-		return nil, err
-	}
-	reg.SetCreatedAt(createdAt)
-
-	return reg, nil
-}
-
-func (r *SQLiteRepository) FindByNickname(ctx context.Context, nickname string) (*domain.Registration, error) {
-	query := `
-		SELECT id, name, nickname, project_idea, teammate, role, created_at
-		FROM registrations
-		WHERE nickname = ?
-	`
-
-	row := r.db.QueryRowContext(ctx, query, nickname)
-
-	var dbID int
-	var name, dbNickname, projectIdea, role string
-	var teammate *string
-	var createdAtStr string
-
-	err := row.Scan(&dbID, &name, &dbNickname, &projectIdea, &teammate, &role, &createdAtStr)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("registration not found")
-		}
-		return nil, err
-	}
-
-	reg, err := domain.NewRegistration(name, dbNickname, projectIdea, teammate, role)
-	if err != nil {
-		return nil, err
-	}
-
-	err = reg.SetID(dbID)
-	if err != nil {
-		return nil, err
-	}
-
-	// Parse and set created_at
-	createdAt, err := time.Parse(time.RFC3339, createdAtStr)
-	if err != nil {
-		return nil, err
-	}
-	reg.SetCreatedAt(createdAt)
-
-	return reg, nil
-}
-
-func (r *SQLiteRepository) FindAll(ctx context.Context) ([]*domain.Registration, error) {
-	query := `
-		SELECT id, name, nickname, project_idea, teammate, role, created_at
-		FROM registrations
-		ORDER BY created_at DESC
-	`
-
-	rows, err := r.db.QueryContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var registrations []*domain.Registration
-
-	for rows.Next() {
-		var dbID int
-		var name, nickname, projectIdea, role string
-		var teammate *string
-		var createdAtStr string
-
-		err := rows.Scan(&dbID, &name, &nickname, &projectIdea, &teammate, &role, &createdAtStr)
-		if err != nil {
-			return nil, err
-		}
-
-		reg, err := domain.NewRegistration(name, nickname, projectIdea, teammate, role)
-		if err != nil {
-			return nil, err
-		}
-
-		err = reg.SetID(dbID)
-		if err != nil {
-			return nil, err
-		}
-
-		// Parse and set created_at
-		createdAt, err := time.Parse(time.RFC3339, createdAtStr)
-		if err != nil {
-			return nil, err
-		}
-		reg.SetCreatedAt(createdAt)
-
-		registrations = append(registrations, reg)
-	}
-
-	return registrations, nil
-}
-
-func (r *SQLiteRepository) Count(ctx context.Context) (int, error) {
-	query := `SELECT COUNT(*) FROM registrations`
-
-	row := r.db.QueryRowContext(ctx, query)
-
-	var count int
-	err := row.Scan(&count)
-	if err != nil {
-		return 0, err
-	}
-
-	return count, nil
 }
