@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"time"
 
-	"hackathon-pvc-backend/internal/registration/application/ports"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
@@ -13,7 +12,7 @@ type SqlRegistrationRepository struct {
 	db *sql.DB
 }
 
-func NewSqlRegistrationRepository(db *sql.DB) ports.RegistrationRepositoryPort {
+func NewSqlRegistrationRepository(db *sql.DB) domain.RegistrationRepositoryPort {
 	return &SqlRegistrationRepository{db: db}
 }
 

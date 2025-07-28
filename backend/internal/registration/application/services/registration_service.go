@@ -2,15 +2,14 @@ package services
 
 import (
 	"context"
-	"hackathon-pvc-backend/internal/registration/application/ports"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
 type RegistrationService struct {
-	repository ports.RegistrationRepositoryPort
+	repository domain.RegistrationRepositoryPort
 }
 
-func NewRegistrationService(repository ports.RegistrationRepositoryPort) *RegistrationService {
+func NewRegistrationService(repository domain.RegistrationRepositoryPort) *RegistrationService {
 	return &RegistrationService{
 		repository: repository,
 	}
