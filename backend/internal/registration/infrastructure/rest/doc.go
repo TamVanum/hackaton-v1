@@ -8,10 +8,11 @@ type CreateRegistrationRequest struct {
 	ProjectIdea     string  `json:"project_idea" binding:"required"`
 	TeamPreference  bool    `json:"team_preference" binding:"required"`
 	DesiredTeammate *string `json:"desired_teammate,omitempty"`
-	Role            string  `json:"role" binding:"required"`
+	RoleIDs         []int   `json:"role_ids" binding:"required"`
+	TechnologyIDs   []int   `json:"technology_ids" binding:"required"`
 }
 
-type RegistrationResponse struct {
+type CreateRegisterResponse struct {
 	ID              int     `json:"id"`
 	Name            string  `json:"name"`
 	Nickname        string  `json:"nickname"`
@@ -20,7 +21,8 @@ type RegistrationResponse struct {
 	ProjectIdea     string  `json:"project_idea"`
 	TeamPreference  bool    `json:"team_preference"`
 	DesiredTeammate *string `json:"desired_teammate,omitempty"`
-	Role            string  `json:"role"`
+	RoleIDs         []int   `json:"role_ids"`
+	TechnologyIDs   []int   `json:"technology_ids"`
 	CreatedAt       string  `json:"created_at"`
 }
 

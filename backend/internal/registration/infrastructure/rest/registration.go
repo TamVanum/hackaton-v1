@@ -42,7 +42,7 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 	}
 
 	// Convert to response DTO
-	response := h.toRegistrationResponse(registration)
+	response := h.toRegistrationResponse(registration, req)
 
 	// Write success response
 	w.Header().Set("Content-Type", "application/json")
@@ -54,15 +54,18 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 	})
 }
 
-func (h *RegistrationHandler) toRegistrationResponse(reg *domain.Registration) RegistrationResponse {
-	return RegistrationResponse{
+func (h *RegistrationHandler) toRegistrationResponse(reg *domain.Registration, req CreateRegistrationRequest) CreateRegisterResponse {
+	return CreateRegisterResponse{
 		ID:              reg.ID(),
 		Name:            reg.Name(),
 		Nickname:        reg.Nickname(),
 		Email:           reg.Email(),
 		Region:          reg.Region(),
 		ProjectIdea:     reg.ProjectIdea(),
+		TeamPreference:  reg.TeamPreference(),
 		DesiredTeammate: reg.DesiredTeammate(),
+		RoleIDs:         req.RoleIDs,
+		TechnologyIDs:   req.TechnologyIDs,
 		CreatedAt:       reg.CreatedAt().Format("2006-01-02T15:04:05Z07:00"),
 	}
 }
