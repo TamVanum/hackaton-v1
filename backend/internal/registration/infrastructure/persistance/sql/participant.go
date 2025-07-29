@@ -82,21 +82,115 @@ func (r *SqlParticipantRepository) SetTechnologies(ctx context.Context, particip
 }
 
 func (r *SqlParticipantRepository) FindByID(ctx context.Context, id int) (*domain.Participant, error) {
-	// TODO: Implement when needed
-	return nil, nil
+	query := `
+		SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
+		FROM participants
+		WHERE id = ?
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	participant := &domain.Participant{}
+	err = r.db.QueryRowContext(ctx, query, id).Scan(
+		participant.Name(),
+		participant.Nickname(),
+		participant.Email(),
+		participant.Region(),
+		participant.ProjectIdea(),
+		participant.TeamPreference(),
+		participant.DesiredTeammate(),
+		participant.CreatedAt().Format(time.RFC3339),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return participant, nil
 }
 
 func (r *SqlParticipantRepository) FindByNickname(ctx context.Context, nickname string) (*domain.Participant, error) {
-	// TODO: Implement when needed
-	return nil, nil
+	query := `
+		SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
+		FROM participants
+		WHERE nickname = ?
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, nickname)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	participant := &domain.Participant{}
+	err = r.db.QueryRowContext(ctx, query, nickname).Scan(
+		participant.Name(),
+		participant.Nickname(),
+		participant.Email(),
+		participant.Region(),
+		participant.ProjectIdea(),
+		participant.TeamPreference(),
+		participant.DesiredTeammate(),
+		participant.CreatedAt().Format(time.RFC3339),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return participant, nil
 }
 
 func (r *SqlParticipantRepository) FindAll(ctx context.Context) ([]*domain.Participant, error) {
-	// TODO: Implement when needed
-	return nil, nil
+	query := `
+		SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
+		FROM participants
+	`
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	participants := []*domain.Participant{}
+	for rows.Next() {
+		participant := &domain.Participant{}
+		err = rows.Scan(
+			participant.ID(),
+			participant.Name(),
+			participant.Nickname(),
+			participant.Email(),
+			participant.Region(),
+			participant.ProjectIdea(),
+			participant.TeamPreference(),
+			participant.DesiredTeammate(),
+			participant.CreatedAt(),
+		)
+		if err != nil {
+			return nil, err
+		}
+		participants = append(participants, participant)
+	}
+
+	return participants, nil
 }
 
 func (r *SqlParticipantRepository) Count(ctx context.Context) (int, error) {
-	// TODO: Implement when needed
-	return 0, nil
+	query := `
+		SELECT COUNT(*) FROM participants
+	`
+
+	var count int
+	err := r.db.QueryRowContext(ctx, query).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
