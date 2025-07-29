@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"hackathon-pvc-backend/internal/registration/application/services"
+	"hackathon-pvc-backend/internal/registration/app"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
 type RegistrationHandler struct {
-	service *services.RegistrationService
+	service *app.RegistrationService
 }
 
-func NewRegistrationHandler(service *services.RegistrationService) *RegistrationHandler {
+func NewRegistrationHandler(service *app.RegistrationService) *RegistrationHandler {
 	return &RegistrationHandler{
 		service: service,
 	}

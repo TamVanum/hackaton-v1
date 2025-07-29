@@ -1,4 +1,4 @@
-package services
+package app
 
 import (
 	"context"
@@ -7,11 +7,15 @@ import (
 
 type RegistrationService struct {
 	registrationRepository domain.RegistrationRepositoryPort
+	roleService            *RoleService
+	technologyService      *TechnologyService
 }
 
-func NewRegistrationService(registrationRepository domain.RegistrationRepositoryPort) *RegistrationService {
+func NewRegistrationService(registrationRepository domain.RegistrationRepositoryPort, roleService *RoleService, technologyService *TechnologyService) *RegistrationService {
 	return &RegistrationService{
 		registrationRepository: registrationRepository,
+		roleService:            roleService,
+		technologyService:      technologyService,
 	}
 }
 
@@ -20,6 +24,16 @@ func (s *RegistrationService) Save(ctx context.Context, name, nickname, email, r
 	if err != nil {
 		return nil, err
 	}
+
+	// roles, err := s.roleService.Get(ctx)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// technologies, err := s.technologyService.Get(ctx)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	return s.registrationRepository.Save(ctx, registration)
 }
