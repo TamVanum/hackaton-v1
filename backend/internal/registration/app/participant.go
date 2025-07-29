@@ -23,3 +23,7 @@ func (s *ParticipantService) Save(ctx context.Context, name, nickname, email, re
 
 	return s.participantRepository.Save(ctx, participant)
 }
+
+func (s *ParticipantService) FindByNickname(ctx context.Context, nickname string) (*domain.Participant, error) {
+	return s.participantRepository.FindByNickname(ctx, nickname)
+}

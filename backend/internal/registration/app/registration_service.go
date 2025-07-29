@@ -7,12 +7,16 @@ import (
 )
 
 type RegistrationService struct {
-	participantRepository domain.ParticipantRepositoryPort
+	participantService   domain.ParticipantServicePort
+	roleRepository       domain.RoleRepositoryPort
+	technologyRepository domain.TechnologyRepositoryPort
 }
 
-func NewRegistrationService(participantRepository domain.ParticipantRepositoryPort) *RegistrationService {
+func NewRegistrationService(participantService domain.ParticipantServicePort, roleRepository domain.RoleRepositoryPort, technologyRepository domain.TechnologyRepositoryPort) *RegistrationService {
 	return &RegistrationService{
-		participantRepository: participantRepository,
+		participantService:   participantService,
+		roleRepository:       roleRepository,
+		technologyRepository: technologyRepository,
 	}
 }
 
@@ -38,7 +42,7 @@ func (s *RegistrationService) RegisterParticipant(
 		return nil, err
 	}
 
-	savedParticipant, err := s.participantRepository.Save(ctx, participant)
+	savedParticipant, err := s.participantService.RegisterParticipant(ctx, participant)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +87,7 @@ func (s *RegistrationService) validateRegistrationRules(roleIDs, technologyIDs [
 }
 
 func (s *RegistrationService) checkNicknameAvailability(ctx context.Context, nickname string) error {
-	existingParticipant, err := s.participantRepository.FindByNickname(ctx, nickname)
+	existingParticipant, err := s.participantService.FindByNickname(ctx, nickname)
 	if err == nil && existingParticipant != nil {
 		return errors.New("nickname already taken")
 	}
@@ -107,16 +111,4 @@ func (s *RegistrationService) hasDuplicates(slice []int) bool {
 		seen[item] = true
 	}
 	return false
-}
-
-func (s *RegistrationService) GetRegistrationStats(ctx context.Context) (map[string]interface{}, error) {
-	count, err := s.participantRepository.Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return map[string]interface{}{
-		"total_participants": count,
-		"available_spots":    500 - count, // TODO: Make this configurable
-	}, nil
 }
