@@ -16,6 +16,7 @@ func NewParticipantService(participantRepository domain.ParticipantRepositoryPor
 }
 
 func (s *ParticipantService) RegisterParticipant(ctx context.Context, participant *domain.Participant) (*domain.Participant, error) {
+
 	return s.participantRepository.Save(ctx, participant)
 }
 
@@ -24,11 +25,17 @@ func (s *ParticipantService) FindByNickname(ctx context.Context, nickname string
 }
 
 func (s *ParticipantService) AssignRoles(ctx context.Context, participant *domain.Participant, roles []*domain.Role) error {
-	// TODO: Implement role assignment - needs junction table repository
+	if err := s.participantRepository.SetRoles(ctx, participant, roles); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *ParticipantService) AssignTechnologies(ctx context.Context, participant *domain.Participant, technologies []*domain.Technology) error {
-	// TODO: Implement technology assignment - needs junction table repository
+	if err := s.participantRepository.SetTechnologies(ctx, participant, technologies); err != nil {
+		return err
+	}
+
 	return nil
 }

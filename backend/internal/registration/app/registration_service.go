@@ -38,17 +38,9 @@ func (s *RegistrationService) RegisterParticipant(
 		return nil, err
 	}
 
-	if len(roles) == 0 {
-		return nil, errors.New("at least one role must be selected")
-	}
-
 	technologies, err := s.technologyService.GetByIDs(ctx, technologyIDs)
 	if err != nil {
 		return nil, err
-	}
-
-	if len(technologies) == 0 {
-		return nil, errors.New("at least one technology must be selected")
 	}
 
 	participant, err := domain.NewParticipant(name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
