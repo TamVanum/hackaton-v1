@@ -7,16 +7,16 @@ import (
 )
 
 type RegistrationService struct {
-	participantService   domain.ParticipantServicePort
-	roleRepository       domain.RoleRepositoryPort
-	technologyRepository domain.TechnologyRepositoryPort
+	participantService domain.ParticipantServicePort
+	roleService        domain.RoleServicePort
+	technologyService  domain.TechnologyServicePort
 }
 
-func NewRegistrationService(participantService domain.ParticipantServicePort, roleRepository domain.RoleRepositoryPort, technologyRepository domain.TechnologyRepositoryPort) *RegistrationService {
+func NewRegistrationService(participantService domain.ParticipantServicePort, roleService domain.RoleServicePort, technologyService domain.TechnologyServicePort) *RegistrationService {
 	return &RegistrationService{
-		participantService:   participantService,
-		roleRepository:       roleRepository,
-		technologyRepository: technologyRepository,
+		participantService: participantService,
+		roleService:        roleService,
+		technologyService:  technologyService,
 	}
 }
 
@@ -47,13 +47,17 @@ func (s *RegistrationService) RegisterParticipant(
 		return nil, err
 	}
 
-	if err := s.createRoleRelationships(ctx, savedParticipant.ID(), roleIDs); err != nil {
+	// Create role relationships
+	// TODO: Implement role assignment when ParticipantService is ready
+	if err := s.participantService.AssignRoles(ctx, participant, roleIDs); err != nil {
 		return nil, err
 	}
 
-	if err := s.createTechnologyRelationships(ctx, savedParticipant.ID(), technologyIDs); err != nil {
-		return nil, err
-	}
+	// Create technology relationships
+	// TODO: Implement technology assignment when ParticipantService is ready
+	// if err := s.participantService.AssignTechnologies(ctx, savedParticipant.ID(), technologyIDs); err != nil {
+	// 	return nil, err
+	// }
 
 	return savedParticipant, nil
 }
@@ -91,14 +95,6 @@ func (s *RegistrationService) checkNicknameAvailability(ctx context.Context, nic
 	if err == nil && existingParticipant != nil {
 		return errors.New("nickname already taken")
 	}
-	return nil
-}
-
-func (s *RegistrationService) createRoleRelationships(ctx context.Context, participantID int, roleIDs []int) error {
-	return nil
-}
-
-func (s *RegistrationService) createTechnologyRelationships(ctx context.Context, participantID int, technologyIDs []int) error {
 	return nil
 }
 

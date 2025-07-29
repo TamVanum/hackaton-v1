@@ -49,43 +49,11 @@ func (r *SqlParticipantRepository) Save(ctx context.Context, participant *domain
 	return participant, nil
 }
 
-func (r *SqlParticipantRepository) SetRoles(ctx context.Context, participant *domain.Participant, roles []*domain.Role) error {
-	query := `
-		INSERT INTO participant_roles (participant_id, role_id)
-		VALUES (?, ?)
-	`
-
-	for _, role := range roles {
-		_, err := r.db.ExecContext(ctx, query, participant.ID(), role.ID())
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (r *SqlParticipantRepository) SetTechnologies(ctx context.Context, participant *domain.Participant, technologies []*domain.Technology) error {
-	query := `
-		INSERT INTO participant_technologies (participant_id, technology_id)
-		VALUES (?, ?)
-	`
-
-	for _, technology := range technologies {
-		_, err := r.db.ExecContext(ctx, query, participant.ID(), technology.ID())
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (r *SqlParticipantRepository) FindByID(ctx context.Context, id int) (*domain.Participant, error) {
 	query := `
-		SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
-		FROM participants
-		WHERE id = ?
+	SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
+	FROM participants
+	WHERE id = ?
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, id)
@@ -115,9 +83,9 @@ func (r *SqlParticipantRepository) FindByID(ctx context.Context, id int) (*domai
 
 func (r *SqlParticipantRepository) FindByNickname(ctx context.Context, nickname string) (*domain.Participant, error) {
 	query := `
-		SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
-		FROM participants
-		WHERE nickname = ?
+	SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
+	FROM participants
+	WHERE nickname = ?
 	`
 
 	rows, err := r.db.QueryContext(ctx, query, nickname)
@@ -147,8 +115,8 @@ func (r *SqlParticipantRepository) FindByNickname(ctx context.Context, nickname 
 
 func (r *SqlParticipantRepository) FindAll(ctx context.Context) ([]*domain.Participant, error) {
 	query := `
-		SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
-		FROM participants
+	SELECT id, name, nickname, email, region, project_idea, team_preference, desired_teammate, created_at
+	FROM participants
 	`
 
 	rows, err := r.db.QueryContext(ctx, query)
@@ -181,16 +149,34 @@ func (r *SqlParticipantRepository) FindAll(ctx context.Context) ([]*domain.Parti
 	return participants, nil
 }
 
-func (r *SqlParticipantRepository) Count(ctx context.Context) (int, error) {
+func (r *SqlParticipantRepository) SetRoles(ctx context.Context, participant *domain.Participant, roles []*domain.Role) error {
 	query := `
-		SELECT COUNT(*) FROM participants
+		INSERT INTO participant_roles (participant_id, role_id)
+		VALUES (?, ?)
 	`
 
-	var count int
-	err := r.db.QueryRowContext(ctx, query).Scan(&count)
-	if err != nil {
-		return 0, err
+	for _, role := range roles {
+		_, err := r.db.ExecContext(ctx, query, participant.ID(), role.ID())
+		if err != nil {
+			return err
+		}
 	}
 
-	return count, nil
+	return nil
+}
+
+func (r *SqlParticipantRepository) SetTechnologies(ctx context.Context, participant *domain.Participant, technologies []*domain.Technology) error {
+	query := `
+		INSERT INTO participant_technologies (participant_id, technology_id)
+		VALUES (?, ?)
+	`
+
+	for _, technology := range technologies {
+		_, err := r.db.ExecContext(ctx, query, participant.ID(), technology.ID())
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

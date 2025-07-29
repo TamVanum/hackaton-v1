@@ -27,3 +27,11 @@ func (s *ParticipantService) Save(ctx context.Context, name, nickname, email, re
 func (s *ParticipantService) FindByNickname(ctx context.Context, nickname string) (*domain.Participant, error) {
 	return s.participantRepository.FindByNickname(ctx, nickname)
 }
+
+func (s *ParticipantService) AssignRoles(ctx context.Context, participant *domain.Participant, roles []*domain.Role) error {
+	return s.participantRepository.SetRoles(ctx, participant, roles)
+}
+
+func (s *ParticipantService) AssignTechnologies(ctx context.Context, participant *domain.Participant, technologies []*domain.Technology) error {
+	return s.participantRepository.SetTechnologies(ctx, participant, technologies)
+}
