@@ -7,12 +7,16 @@ import (
 )
 
 type RegistrationService struct {
-	participantService domain.ParticipantServicePort
-	roleService        domain.RoleServicePort
-	technologyService  domain.TechnologyServicePort
+	participantService domain.ParticipantService
+	roleService        domain.RoleService
+	technologyService  domain.TechnologyService
 }
 
-func NewRegistrationService(participantService domain.ParticipantServicePort, roleService domain.RoleServicePort, technologyService domain.TechnologyServicePort) *RegistrationService {
+func NewRegistrationService(
+	participantService domain.ParticipantService,
+	roleService domain.RoleService,
+	technologyService domain.TechnologyService,
+) *RegistrationService {
 	return &RegistrationService{
 		participantService: participantService,
 		roleService:        roleService,

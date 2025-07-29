@@ -6,10 +6,10 @@ import (
 )
 
 type ParticipantService struct {
-	participantRepository domain.ParticipantRepositoryPort
+	participantRepository domain.ParticipantRepository
 }
 
-func NewParticipantService(participantRepository domain.ParticipantRepositoryPort) domain.ParticipantServicePort {
+func NewParticipantService(participantRepository domain.ParticipantRepository) domain.ParticipantService {
 	return &ParticipantService{
 		participantRepository: participantRepository,
 	}

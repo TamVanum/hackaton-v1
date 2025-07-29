@@ -6,10 +6,10 @@ import (
 )
 
 type TechnologyService struct {
-	technologyRepository domain.TechnologyRepositoryPort
+	technologyRepository domain.TechnologyRepository
 }
 
-func NewTechnologyService(technologyRepository domain.TechnologyRepositoryPort) domain.TechnologyServicePort {
+func NewTechnologyService(technologyRepository domain.TechnologyRepository) domain.TechnologyService {
 	return &TechnologyService{
 		technologyRepository: technologyRepository,
 	}

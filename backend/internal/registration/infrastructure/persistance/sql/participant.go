@@ -12,7 +12,7 @@ type SqlParticipantRepository struct {
 	db *sql.DB
 }
 
-func NewSqlParticipantRepository(db *sql.DB) domain.ParticipantRepositoryPort {
+func NewSqlParticipantRepository(db *sql.DB) domain.ParticipantRepository {
 	return &SqlParticipantRepository{db: db}
 }
 

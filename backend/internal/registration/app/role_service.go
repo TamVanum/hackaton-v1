@@ -6,10 +6,10 @@ import (
 )
 
 type RoleService struct {
-	roleRepository domain.RoleRepositoryPort
+	roleRepository domain.RoleRepository
 }
 
-func NewRoleService(roleRepository domain.RoleRepositoryPort) domain.RoleServicePort {
+func NewRoleService(roleRepository domain.RoleRepository) domain.RoleService {
 	return &RoleService{
 		roleRepository: roleRepository,
 	}

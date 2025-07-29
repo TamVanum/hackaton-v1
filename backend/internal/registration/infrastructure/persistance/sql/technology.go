@@ -10,7 +10,7 @@ type SqlTechnologyRepository struct {
 	db *sql.DB
 }
 
-func NewSqlTechnologyRepository(db *sql.DB) domain.TechnologyRepositoryPort {
+func NewSqlTechnologyRepository(db *sql.DB) domain.TechnologyRepository {
 	return &SqlTechnologyRepository{db: db}
 }
 

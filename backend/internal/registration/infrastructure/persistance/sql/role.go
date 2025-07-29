@@ -10,7 +10,7 @@ type SqlRoleRepository struct {
 	db *sql.DB
 }
 
-func NewSqlRoleRepository(db *sql.DB) domain.RoleRepositoryPort {
+func NewSqlRoleRepository(db *sql.DB) domain.RoleRepository {
 	return &SqlRoleRepository{db: db}
 }
 
