@@ -16,11 +16,11 @@ func NewSqlRoleRepository(db *sql.DB) domain.RoleRepositoryPort {
 
 func (r *SqlRoleRepository) Save(ctx context.Context, role *domain.Role) (*domain.Role, error) {
 	query := `
-		INSERT INTO roles (name)
-		VALUES (?)
+		INSERT INTO roles (name, description)
+		VALUES (?, ?)
 	`
 
-	result, err := r.db.ExecContext(ctx, query, role.Name())
+	result, err := r.db.ExecContext(ctx, query, role.Name(), role.Description())
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (r *SqlRoleRepository) Save(ctx context.Context, role *domain.Role) (*domai
 
 func (r *SqlRoleRepository) FindAll(ctx context.Context) ([]*domain.Role, error) {
 	query := `
-		SELECT id, name
+		SELECT id, name, description
 		FROM roles
 	`
 
@@ -45,44 +45,77 @@ func (r *SqlRoleRepository) FindAll(ctx context.Context) ([]*domain.Role, error)
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	roles := []*domain.Role{}
 
 	for rows.Next() {
-		var role domain.Role
-		if err := rows.Scan(); err != nil {
+		var id int
+		var name, description string
+
+		if err := rows.Scan(&id, &name, &description); err != nil {
 			return nil, err
 		}
-		roles = append(roles, &role)
+
+		// Create role and set values
+		domainRole, err := domain.NewRole(name, description)
+		if err != nil {
+			return nil, err
+		}
+		domainRole.SetID(id)
+
+		roles = append(roles, domainRole)
 	}
 
 	return roles, nil
 }
 
-func (r *SqlRoleRepository) BulkFindByIDs(ctx context.Context, ids []int) ([]*domain.Role, error) {
-	query := `
-		SELECT id, name
-		FROM roles
-		WHERE id IN (?)
-	`
+func (r *SqlRoleRepository) FindByIDs(ctx context.Context, ids []int) ([]*domain.Role, error) {
+	if len(ids) == 0 {
+		return []*domain.Role{}, nil
+	}
 
-	rows, err := r.db.QueryContext(ctx, query, ids)
+	// Create placeholders for IN clause
+	placeholders := make([]string, len(ids))
+	args := make([]interface{}, len(ids))
+	for i, id := range ids {
+		placeholders[i] = "?"
+		args[i] = id
+	}
+
+	query := `
+		SELECT id, name, description
+		FROM roles
+		WHERE id IN (` + placeholders[0]
+	for i := 1; i < len(placeholders); i++ {
+		query += ", " + placeholders[i]
+	}
+	query += ")"
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	roles := []*domain.Role{}
 
 	for rows.Next() {
-		var role domain.Role
-		if err := rows.Scan(); err != nil {
+		var id int
+		var name, description string
+
+		if err := rows.Scan(&id, &name, &description); err != nil {
 			return nil, err
 		}
-		roles = append(roles, &role)
+
+		// Create role and set values
+		domainRole, err := domain.NewRole(name, description)
+		if err != nil {
+			return nil, err
+		}
+		domainRole.SetID(id)
+
+		roles = append(roles, domainRole)
 	}
 
 	return roles, nil

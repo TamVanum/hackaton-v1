@@ -1,11 +1,10 @@
 package domain
 
-import (
-	"context"
-)
+import "context"
 
+// RoleRepositoryPort defines the contract for role persistence
 type RoleRepositoryPort interface {
-	Save(ctx context.Context, role *Role) (*Role, error)
 	FindAll(ctx context.Context) ([]*Role, error)
-	BulkFindByIDs(ctx context.Context, ids []int) ([]*Role, error)
+	FindByIDs(ctx context.Context, ids []int) ([]*Role, error)
+	Save(ctx context.Context, role *Role) (*Role, error)
 }

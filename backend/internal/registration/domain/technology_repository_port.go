@@ -1,11 +1,10 @@
 package domain
 
-import (
-	"context"
-)
+import "context"
 
+// TechnologyRepositoryPort defines the contract for technology persistence
 type TechnologyRepositoryPort interface {
-	Save(ctx context.Context, technology *Technology) (*Technology, error)
 	FindAll(ctx context.Context) ([]*Technology, error)
-	BulkFindByIDs(ctx context.Context, ids []int) ([]*Technology, error)
+	FindByIDs(ctx context.Context, ids []int) ([]*Technology, error)
+	Save(ctx context.Context, technology *Technology) (*Technology, error)
 }

@@ -9,7 +9,7 @@ type TechnologyService struct {
 	technologyRepository domain.TechnologyRepositoryPort
 }
 
-func NewTechnologyService(technologyRepository domain.TechnologyRepositoryPort) *TechnologyService {
+func NewTechnologyService(technologyRepository domain.TechnologyRepositoryPort) domain.TechnologyServicePort {
 	return &TechnologyService{
 		technologyRepository: technologyRepository,
 	}
@@ -20,7 +20,7 @@ func (s *TechnologyService) Get(ctx context.Context) ([]*domain.Technology, erro
 }
 
 func (s *TechnologyService) GetByIDs(ctx context.Context, ids []int) ([]*domain.Technology, error) {
-	return s.technologyRepository.BulkFindByIDs(ctx, ids)
+	return s.technologyRepository.FindByIDs(ctx, ids)
 }
 
 func (s *TechnologyService) Save(ctx context.Context, technology *domain.Technology) (*domain.Technology, error) {

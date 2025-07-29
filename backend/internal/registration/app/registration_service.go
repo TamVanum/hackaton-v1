@@ -61,11 +61,11 @@ func (s *RegistrationService) RegisterParticipant(
 		return nil, err
 	}
 
-	if err := s.participantService.AssignRoles(ctx, participant, roles); err != nil {
+	if err := s.participantService.AssignRoles(ctx, savedParticipant, roles); err != nil {
 		return nil, err
 	}
 
-	if err := s.participantService.AssignTechnologies(ctx, participant, technologies); err != nil {
+	if err := s.participantService.AssignTechnologies(ctx, savedParticipant, technologies); err != nil {
 		return nil, err
 	}
 

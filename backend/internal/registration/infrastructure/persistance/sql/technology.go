@@ -16,11 +16,11 @@ func NewSqlTechnologyRepository(db *sql.DB) domain.TechnologyRepositoryPort {
 
 func (r *SqlTechnologyRepository) Save(ctx context.Context, technology *domain.Technology) (*domain.Technology, error) {
 	query := `
-		INSERT INTO technologies (name)
-		VALUES (?)
+		INSERT INTO technologies (name, description, category)
+		VALUES (?, ?, ?)
 	`
 
-	result, err := r.db.ExecContext(ctx, query, technology.Name())
+	result, err := r.db.ExecContext(ctx, query, technology.Name(), technology.Description(), technology.Category())
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (r *SqlTechnologyRepository) Save(ctx context.Context, technology *domain.T
 
 func (r *SqlTechnologyRepository) FindAll(ctx context.Context) ([]*domain.Technology, error) {
 	query := `
-		SELECT id, name
+		SELECT id, name, description, category
 		FROM technologies
 	`
 
@@ -45,44 +45,77 @@ func (r *SqlTechnologyRepository) FindAll(ctx context.Context) ([]*domain.Techno
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	technologies := []*domain.Technology{}
 
 	for rows.Next() {
-		var technology domain.Technology
-		if err := rows.Scan(); err != nil {
+		var id int
+		var name, description, category string
+
+		if err := rows.Scan(&id, &name, &description, &category); err != nil {
 			return nil, err
 		}
-		technologies = append(technologies, &technology)
+
+		// Create technology and set values
+		domainTechnology, err := domain.NewTechnology(name, description, category)
+		if err != nil {
+			return nil, err
+		}
+		domainTechnology.SetID(id)
+
+		technologies = append(technologies, domainTechnology)
 	}
 
 	return technologies, nil
 }
 
-func (r *SqlTechnologyRepository) BulkFindByIDs(ctx context.Context, ids []int) ([]*domain.Technology, error) {
-	query := `
-		SELECT id, name
-		FROM technologies
-		WHERE id IN (?)
-	`
+func (r *SqlTechnologyRepository) FindByIDs(ctx context.Context, ids []int) ([]*domain.Technology, error) {
+	if len(ids) == 0 {
+		return []*domain.Technology{}, nil
+	}
 
-	rows, err := r.db.QueryContext(ctx, query, ids)
+	// Create placeholders for IN clause
+	placeholders := make([]string, len(ids))
+	args := make([]interface{}, len(ids))
+	for i, id := range ids {
+		placeholders[i] = "?"
+		args[i] = id
+	}
+
+	query := `
+		SELECT id, name, description, category
+		FROM technologies
+		WHERE id IN (` + placeholders[0]
+	for i := 1; i < len(placeholders); i++ {
+		query += ", " + placeholders[i]
+	}
+	query += ")"
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	technologies := []*domain.Technology{}
 
 	for rows.Next() {
-		var technology domain.Technology
-		if err := rows.Scan(); err != nil {
+		var id int
+		var name, description, category string
+
+		if err := rows.Scan(&id, &name, &description, &category); err != nil {
 			return nil, err
 		}
-		technologies = append(technologies, &technology)
+
+		// Create technology and set values
+		domainTechnology, err := domain.NewTechnology(name, description, category)
+		if err != nil {
+			return nil, err
+		}
+		domainTechnology.SetID(id)
+
+		technologies = append(technologies, domainTechnology)
 	}
 
 	return technologies, nil
