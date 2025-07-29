@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
+func SetupRouter(participantHandler *rest.ParticipantHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
@@ -29,7 +29,7 @@ func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
 		r.Get("/health", healthHandler)
 
 		r.Route("/registrations", func(r chi.Router) {
-			r.Post("/", registrationHandler.CreateRegistration)
+			r.Post("/", participantHandler.CreateParticipant)
 		})
 	})
 

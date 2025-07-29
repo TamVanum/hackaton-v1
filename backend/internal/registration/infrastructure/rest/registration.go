@@ -8,17 +8,17 @@ import (
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
-type RegistrationHandler struct {
-	service *app.RegistrationService
+type ParticipantHandler struct {
+	service *app.ParticipantService
 }
 
-func NewRegistrationHandler(service *app.RegistrationService) *RegistrationHandler {
-	return &RegistrationHandler{
+func NewParticipantHandler(service *app.ParticipantService) *ParticipantHandler {
+	return &ParticipantHandler{
 		service: service,
 	}
 }
 
-func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.Request) {
+func (h *ParticipantHandler) CreateParticipant(w http.ResponseWriter, r *http.Request) {
 	var req CreateRegistrationRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -52,7 +52,7 @@ func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.
 	})
 }
 
-func (h *RegistrationHandler) toRegistrationResponse(reg *domain.Registration, req CreateRegistrationRequest) CreateRegisterResponse {
+func (h *ParticipantHandler) toRegistrationResponse(reg *domain.Participant, req CreateRegistrationRequest) CreateRegisterResponse {
 	return CreateRegisterResponse{
 		ID:              reg.ID(),
 		Name:            reg.Name(),
@@ -68,7 +68,7 @@ func (h *RegistrationHandler) toRegistrationResponse(reg *domain.Registration, r
 	}
 }
 
-func (h *RegistrationHandler) writeErrorResponse(w http.ResponseWriter, statusCode int, error, message string) {
+func (h *ParticipantHandler) writeErrorResponse(w http.ResponseWriter, statusCode int, error, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(ErrorResponse{

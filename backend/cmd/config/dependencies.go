@@ -9,21 +9,22 @@ import (
 )
 
 type Dependencies struct {
-	RegistrationHandler *rest.RegistrationHandler
+	ParticipantHandler *rest.ParticipantHandler
 }
 
 func WireDependencies(db *sql.DB) *Dependencies {
-	registrationRepository := repo.NewSqlRegistrationRepository(db)
-	roleRepository := repo.NewSqlRoleRepository(db)
-	technologyRepository := repo.NewSqlTechnologyRepository(db)
+	participantRepository := repo.NewSqlParticipantRepository(db)
+	// roleRepository := repo.NewSqlRoleRepository(db)
+	// technologyRepository := repo.NewSqlTechnologyRepository(db)
 
-	roleService := app.NewRoleService(roleRepository)
-	technologyService := app.NewTechnologyService(technologyRepository)
-	registrationService := app.NewRegistrationService(registrationRepository, roleService, technologyService)
+	participantService := app.NewParticipantService(participantRepository)
 
-	registrationHandler := rest.NewRegistrationHandler(registrationService)
+	// roleService := services.NewRoleService(roleRepository)
+	// technologyService := services.NewTechnologyService(technologyRepository)
+
+	participantHandler := rest.NewParticipantHandler(participantService)
 
 	return &Dependencies{
-		RegistrationHandler: registrationHandler,
+		ParticipantHandler: participantHandler,
 	}
 }

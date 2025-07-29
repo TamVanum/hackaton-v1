@@ -7,19 +7,20 @@ import (
 	"time"
 )
 
-type Registration struct {
+// Participant is the aggregate root representing a hackathon participant
+type Participant struct {
 	id              int
 	name            string
 	nickname        string
 	email           string
 	region          string
 	projectIdea     string
-	teamPreference  bool
+	teamPreference  bool // true = wants to work in teams, false = wants to work alone
 	desiredTeammate *string
 	createdAt       time.Time
 }
 
-func NewRegistration(name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Registration, error) {
+func NewParticipant(name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Participant, error) {
 	// Validate name
 	if strings.TrimSpace(name) == "" {
 		return nil, errors.New("name cannot be empty")
@@ -49,7 +50,7 @@ func NewRegistration(name, nickname, email, region, projectIdea string, teamPref
 		return nil, errors.New("project idea cannot be empty")
 	}
 
-	return &Registration{
+	return &Participant{
 		name:            strings.TrimSpace(name),
 		nickname:        strings.TrimSpace(nickname),
 		email:           email,
@@ -68,50 +69,52 @@ func isValidEmail(email string) bool {
 }
 
 // Getters
-func (r *Registration) ID() int {
-	return r.id
+func (p *Participant) ID() int {
+	return p.id
 }
 
-func (r *Registration) Name() string {
-	return r.name
+func (p *Participant) Name() string {
+	return p.name
 }
 
-func (r *Registration) Nickname() string {
-	return r.nickname
+func (p *Participant) Nickname() string {
+	return p.nickname
 }
 
-func (r *Registration) Email() string {
-	return r.email
+func (p *Participant) Email() string {
+	return p.email
 }
 
-func (r *Registration) Region() string {
-	return r.region
+func (p *Participant) Region() string {
+	return p.region
 }
 
-func (r *Registration) ProjectIdea() string {
-	return r.projectIdea
+func (p *Participant) ProjectIdea() string {
+	return p.projectIdea
 }
 
-func (r *Registration) TeamPreference() bool {
-	return r.teamPreference
+func (p *Participant) TeamPreference() bool {
+	return p.teamPreference
 }
 
-func (r *Registration) DesiredTeammate() *string {
-	return r.desiredTeammate
+func (p *Participant) DesiredTeammate() *string {
+	return p.desiredTeammate
 }
 
-func (r *Registration) CreatedAt() time.Time {
-	return r.createdAt
+func (p *Participant) CreatedAt() time.Time {
+	return p.createdAt
 }
 
-func (r *Registration) SetID(id int) error {
+// SetID is used by repository after persistence
+func (p *Participant) SetID(id int) error {
 	if id <= 0 {
 		return errors.New("id must be positive")
 	}
-	r.id = id
+	p.id = id
 	return nil
 }
 
-func (r *Registration) SetCreatedAt(createdAt time.Time) {
-	r.createdAt = createdAt
+// SetCreatedAt is used by repository when loading from database
+func (p *Participant) SetCreatedAt(createdAt time.Time) {
+	p.createdAt = createdAt
 }
