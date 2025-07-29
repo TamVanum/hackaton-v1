@@ -29,12 +29,26 @@ func (s *RegistrationService) RegisterParticipant(
 	technologyIDs []int,
 ) (*domain.Participant, error) {
 
-	if err := s.validateRegistrationRules(roleIDs, technologyIDs); err != nil {
+	if err := s.checkNicknameAvailability(ctx, nickname); err != nil {
 		return nil, err
 	}
 
-	if err := s.checkNicknameAvailability(ctx, nickname); err != nil {
+	roles, err := s.roleService.GetByIDs(ctx, roleIDs)
+	if err != nil {
 		return nil, err
+	}
+
+	if len(roles) == 0 {
+		return nil, errors.New("at least one role must be selected")
+	}
+
+	technologies, err := s.technologyService.GetByIDs(ctx, technologyIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(technologies) == 0 {
+		return nil, errors.New("at least one technology must be selected")
 	}
 
 	participant, err := domain.NewParticipant(name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
@@ -47,47 +61,15 @@ func (s *RegistrationService) RegisterParticipant(
 		return nil, err
 	}
 
-	// Create role relationships
-	// TODO: Implement role assignment when ParticipantService is ready
-	if err := s.participantService.AssignRoles(ctx, participant, roleIDs); err != nil {
+	if err := s.participantService.AssignRoles(ctx, participant, roles); err != nil {
 		return nil, err
 	}
 
-	// Create technology relationships
-	// TODO: Implement technology assignment when ParticipantService is ready
-	// if err := s.participantService.AssignTechnologies(ctx, savedParticipant.ID(), technologyIDs); err != nil {
-	// 	return nil, err
-	// }
+	if err := s.participantService.AssignTechnologies(ctx, participant, technologies); err != nil {
+		return nil, err
+	}
 
 	return savedParticipant, nil
-}
-
-func (s *RegistrationService) validateRegistrationRules(roleIDs, technologyIDs []int) error {
-	if len(roleIDs) == 0 {
-		return errors.New("at least one role must be selected")
-	}
-
-	if len(technologyIDs) == 0 {
-		return errors.New("at least one technology must be selected")
-	}
-
-	if len(roleIDs) > 3 {
-		return errors.New("maximum of 3 roles allowed")
-	}
-
-	if len(technologyIDs) > 10 {
-		return errors.New("maximum of 10 technologies allowed")
-	}
-
-	if s.hasDuplicates(roleIDs) {
-		return errors.New("duplicate role IDs are not allowed")
-	}
-
-	if s.hasDuplicates(technologyIDs) {
-		return errors.New("duplicate technology IDs are not allowed")
-	}
-
-	return nil
 }
 
 func (s *RegistrationService) checkNicknameAvailability(ctx context.Context, nickname string) error {
@@ -96,15 +78,4 @@ func (s *RegistrationService) checkNicknameAvailability(ctx context.Context, nic
 		return errors.New("nickname already taken")
 	}
 	return nil
-}
-
-func (s *RegistrationService) hasDuplicates(slice []int) bool {
-	seen := make(map[int]bool)
-	for _, item := range slice {
-		if seen[item] {
-			return true
-		}
-		seen[item] = true
-	}
-	return false
 }
