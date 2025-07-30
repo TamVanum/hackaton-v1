@@ -7,12 +7,12 @@ import (
 )
 
 type Dependencies struct {
-	ParticipantHandler *rest.ParticipantHandler
+	RegistrationHandler *rest.RegistrationHandler
 }
 
 func WireDependencies(db *sql.DB) *Dependencies {
 
 	return &Dependencies{
-		ParticipantHandler: nil,
+		RegistrationHandler: nil,
 	}
 }

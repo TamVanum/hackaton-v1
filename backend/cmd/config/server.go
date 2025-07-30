@@ -9,9 +9,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/tamvanum/go-hexttp/hexttp"
 )
 
-func SetupRouter(participantHandler *rest.ParticipantHandler) *chi.Mux {
+func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
@@ -29,7 +30,7 @@ func SetupRouter(participantHandler *rest.ParticipantHandler) *chi.Mux {
 		r.Get("/health", healthHandler)
 
 		r.Route("/registrations", func(r chi.Router) {
-			r.Post("/", participantHandler.CreateParticipant)
+			r.Post("/", hexttp.Make(registrationHandler.Create))
 		})
 	})
 
