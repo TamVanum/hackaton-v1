@@ -10,9 +10,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/tamvanum/go-hexttp/hexttp"
 )
 
-func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
+func SetupRouter(registrationHandler *rest.RegistrationHandler, rolesHandler *rest.RolesHandler, technologiesHandler *rest.TechnologiesHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
@@ -30,7 +31,17 @@ func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
 		r.Get("/health", healthHandler)
 
 		r.Route("/registrations", func(r chi.Router) {
-			r.Post("/", registrationHandler.CreateRegistration)
+			r.Post("/", hexttp.Make(registrationHandler.CreateRegistration))
+		})
+
+		r.Route("/roles", func(r chi.Router) {
+			r.Get("/", hexttp.Make(rolesHandler.RetrieveRoles))
+			r.Post("/", hexttp.Make(rolesHandler.CreateRole))
+		})
+
+		r.Route("/technologies", func(r chi.Router) {
+			r.Get("/", hexttp.Make(technologiesHandler.RetrieveTechnologies))
+			r.Post("/", hexttp.Make(technologiesHandler.CreateTechnology))
 		})
 
 		r.Route("/html", func(r chi.Router) {

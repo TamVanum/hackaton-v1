@@ -2,82 +2,86 @@ package domain
 
 import (
 	"errors"
-	"strings"
 	"time"
 )
 
-// Registration is the aggregate root
+// Registration represents the complete registration process as an aggregate root
+// It ensures all business invariants are met before the registration can be considered valid
 type Registration struct {
-	id              int
-	name            string
-	nickname        string
-	projectIdea     string
-	desiredTeammate *string
-	role            string
-	createdAt       time.Time
+	id           int
+	participant  *Participant
+	roles        []*Role
+	technologies []*Technology
+	createdAt    time.Time
+	completedAt  *time.Time
 }
 
-func NewRegistration(name, nickname, projectIdea string, desiredTeammate *string, role string) (*Registration, error) {
-	// Validate name
-	if strings.TrimSpace(name) == "" {
-		return nil, errors.New("name cannot be empty")
-	}
+func NewRegistration(
+	participant *Participant,
+	roles []*Role,
+	technologies []*Technology,
+) (*Registration, error) {
 
-	// Validate nickname
-	if strings.TrimSpace(nickname) == "" {
-		return nil, errors.New("nickname cannot be empty")
-	}
-
-	// Validate project idea
-	if strings.TrimSpace(projectIdea) == "" {
-		return nil, errors.New("project idea cannot be empty")
-	}
-
-	// Validate role
-	if strings.TrimSpace(role) == "" {
-		return nil, errors.New("role cannot be empty")
+	if err := validateRegistrationRules(roles, technologies); err != nil {
+		return nil, err
 	}
 
 	return &Registration{
-		name:            strings.TrimSpace(name),
-		nickname:        strings.TrimSpace(nickname),
-		projectIdea:     strings.TrimSpace(projectIdea),
-		desiredTeammate: desiredTeammate,
-		role:            strings.TrimSpace(role),
-		createdAt:       time.Now(),
+		participant:  participant,
+		roles:        roles,
+		technologies: technologies,
+		createdAt:    time.Now(),
 	}, nil
 }
 
-// Getters
+func validateRegistrationRules(roles []*Role, technologies []*Technology) error {
+	if len(roles) == 0 {
+		return errors.New("registration must have at least one role")
+	}
+
+	if len(technologies) == 0 {
+		return errors.New("registration must have at least one technology")
+	}
+
+	for _, role := range roles {
+		if role == nil {
+			return errors.New("invalid role in registration")
+		}
+	}
+
+	for _, tech := range technologies {
+		if tech == nil {
+			return errors.New("invalid technology in registration")
+		}
+	}
+
+	return nil
+}
+
 func (r *Registration) ID() int {
 	return r.id
 }
 
-func (r *Registration) Name() string {
-	return r.name
+func (r *Registration) Participant() *Participant {
+	return r.participant
 }
 
-func (r *Registration) Nickname() string {
-	return r.nickname
+func (r *Registration) Roles() []*Role {
+	rolesCopy := make([]*Role, len(r.roles))
+	copy(rolesCopy, r.roles)
+	return rolesCopy
 }
 
-func (r *Registration) ProjectIdea() string {
-	return r.projectIdea
+func (r *Registration) Technologies() []*Technology {
+	techCopy := make([]*Technology, len(r.technologies))
+	copy(techCopy, r.technologies)
+	return techCopy
 }
 
-func (r *Registration) DesiredTeammate() *string {
-	return r.desiredTeammate
+func (r *Registration) CompletedAt() *time.Time {
+	return r.completedAt
 }
 
-func (r *Registration) Role() string {
-	return r.role
-}
-
-func (r *Registration) CreatedAt() time.Time {
-	return r.createdAt
-}
-
-// SetID is used by repository after persistence
 func (r *Registration) SetID(id int) error {
 	if id <= 0 {
 		return errors.New("id must be positive")
@@ -86,7 +90,10 @@ func (r *Registration) SetID(id int) error {
 	return nil
 }
 
-// SetCreatedAt is used by repository when loading from database
 func (r *Registration) SetCreatedAt(createdAt time.Time) {
 	r.createdAt = createdAt
+}
+
+func (r *Registration) SetCompletedAt(completedAt *time.Time) {
+	r.completedAt = completedAt
 }

@@ -16,7 +16,7 @@ func main() {
 
 	deps := config.WireDependencies(db)
 
-	router := config.SetupRouter(deps.RegistrationHandler)
+	router := config.SetupRouter(deps.RegistrationHandler, deps.RolesHandler, deps.TechnologiesHandler)
 
 	port := config.GetPort()
 	log.Printf("🚀 Hackathon PVC API server starting on port %s", port)
