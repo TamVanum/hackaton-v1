@@ -20,7 +20,7 @@ func NewRegistrationHandler(service *app.RegistrationService) *RegistrationHandl
 	}
 }
 
-func (h *RegistrationHandler) Create(w http.ResponseWriter, r *http.Request) *hexttp.HTTPResponse {
+func (h *RegistrationHandler) CreateRegistration(w http.ResponseWriter, r *http.Request) *hexttp.HTTPResponse {
 
 	var req CreateRegistrationRequest
 

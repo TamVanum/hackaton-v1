@@ -32,7 +32,7 @@ type RoleService interface {
 	GetByIDs(ctx context.Context, ids []int) ([]*Role, error)
 	Make(ctx context.Context, name, description string) (*Role, error)
 	Create(ctx context.Context, name, description string) (*Role, error)
-	Save(ctx context.Context, role *Role) (*Role, error)
+	Persist(ctx context.Context, role *Role) (*Role, error)
 }
 
 type TechnologyRepository interface {
@@ -44,5 +44,7 @@ type TechnologyRepository interface {
 type TechnologyService interface {
 	Get(ctx context.Context) ([]*Technology, error)
 	GetByIDs(ctx context.Context, ids []int) ([]*Technology, error)
-	Save(ctx context.Context, technology *Technology) (*Technology, error)
+	Make(ctx context.Context, name, description string) (*Technology, error)
+	Create(ctx context.Context, name, description string) (*Technology, error)
+	Persist(ctx context.Context, technology *Technology) (*Technology, error)
 }

@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"encoding/json"
 	"hackathon-pvc-backend/internal/registration/app"
 	"net/http"
 
@@ -33,4 +34,24 @@ func (h *TechnologiesHandler) RetrieveTechnologies(w http.ResponseWriter, r *htt
 	}
 
 	return hexttp.OK(response)
+}
+
+func (h *TechnologiesHandler) CreateTechnology(w http.ResponseWriter, r *http.Request) *hexttp.HTTPResponse {
+	var req CreateTechnologyRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return hexttp.InvalidJSON()
+	}
+
+	technology, err := h.service.Create(r.Context(), req.Name, req.Description)
+	if err != nil {
+		return hexttp.InternalError("Error creating technology")
+	}
+
+	response := CreateTechnologyResponse{
+		ID:          technology.ID(),
+		Name:        technology.Name(),
+		Description: technology.Description(),
+	}
+
+	return hexttp.Created(response)
 }

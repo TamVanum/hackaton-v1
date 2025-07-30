@@ -32,7 +32,7 @@ func (s *RoleService) Make(ctx context.Context, name, description string) (*doma
 	return role, nil
 }
 
-func (s *RoleService) Save(ctx context.Context, role *domain.Role) (*domain.Role, error) {
+func (s *RoleService) Persist(ctx context.Context, role *domain.Role) (*domain.Role, error) {
 	return s.roleRepository.Save(ctx, role)
 }
 
@@ -42,7 +42,7 @@ func (s *RoleService) Create(ctx context.Context, name, description string) (*do
 		return nil, err
 	}
 
-	persistedRole, err := s.Save(ctx, role)
+	persistedRole, err := s.Persist(ctx, role)
 	if err != nil {
 		return nil, err
 	}

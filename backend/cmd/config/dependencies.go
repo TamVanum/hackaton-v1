@@ -11,6 +11,7 @@ import (
 type Dependencies struct {
 	RegistrationHandler *rest.RegistrationHandler
 	RolesHandler        *rest.RolesHandler
+	TechnologiesHandler *rest.TechnologiesHandler
 }
 
 func WireDependencies(db *sql.DB) *Dependencies {
@@ -33,9 +34,11 @@ func WireDependencies(db *sql.DB) *Dependencies {
 	// Create handler
 	registrationHandler := rest.NewRegistrationHandler(registrationService)
 	rolesHandler := rest.NewRolesHandler(roleService.(*app.RoleService))
+	technologiesHandler := rest.NewTechnologiesHandler(technologyService.(*app.TechnologyService))
 
 	return &Dependencies{
 		RegistrationHandler: registrationHandler,
 		RolesHandler:        rolesHandler,
+		TechnologiesHandler: technologiesHandler,
 	}
 }
