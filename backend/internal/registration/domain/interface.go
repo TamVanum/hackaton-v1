@@ -14,7 +14,7 @@ type ParticipantRepository interface {
 }
 
 type ParticipantService interface {
-	Create(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Participant, error)
+	Make(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Participant, error)
 	Persist(ctx context.Context, participant *Participant) (*Participant, error)
 	CheckNicknameAvailability(ctx context.Context, nickname string) error
 	AssignRoles(ctx context.Context, participant *Participant, roles []*Role) error
@@ -30,6 +30,8 @@ type RoleRepository interface {
 type RoleService interface {
 	Get(ctx context.Context) ([]*Role, error)
 	GetByIDs(ctx context.Context, ids []int) ([]*Role, error)
+	Make(ctx context.Context, name, description string) (*Role, error)
+	Create(ctx context.Context, name, description string) (*Role, error)
 	Save(ctx context.Context, role *Role) (*Role, error)
 }
 

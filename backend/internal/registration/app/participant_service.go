@@ -16,7 +16,7 @@ func NewParticipantService(participantRepository domain.ParticipantRepository) d
 	}
 }
 
-func (s *ParticipantService) Create(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*domain.Participant, error) {
+func (s *ParticipantService) Make(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*domain.Participant, error) {
 	participant, err := domain.NewParticipant(name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
 	if err != nil {
 		return nil, err

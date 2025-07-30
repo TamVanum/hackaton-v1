@@ -36,7 +36,7 @@ func (s *RegistrationService) Create(
 		return nil, err
 	}
 
-	participant, err := s.participantService.Create(ctx, name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
+	participant, err := s.participantService.Make(ctx, name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
 	if err != nil {
 		return nil, err
 	}

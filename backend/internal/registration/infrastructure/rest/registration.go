@@ -34,5 +34,18 @@ func (h *RegistrationHandler) Create(w http.ResponseWriter, r *http.Request) *he
 		return hexttp.InternalError("Error creating registration")
 	}
 
-	return hexttp.Created(registration)
+	response := CreateRegistrationResponse{
+		ID:              registration.ID(),
+		Name:            registration.Participant().Name(),
+		Email:           registration.Participant().Email(),
+		Nickname:        registration.Participant().Nickname(),
+		Region:          registration.Participant().Region(),
+		ProjectIdea:     registration.Participant().ProjectIdea(),
+		TeamPreference:  registration.Participant().TeamPreference(),
+		DesiredTeammate: registration.Participant().DesiredTeammate(),
+		RoleIDs:         registration.Roles(),
+		TechnologyIDs:   registration.Technologies(),
+	}
+
+	return hexttp.Created(response)
 }

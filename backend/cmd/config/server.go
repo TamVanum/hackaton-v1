@@ -12,7 +12,7 @@ import (
 	"github.com/tamvanum/go-hexttp/hexttp"
 )
 
-func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
+func SetupRouter(registrationHandler *rest.RegistrationHandler, rolesHandler *rest.RolesHandler) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
@@ -31,6 +31,11 @@ func SetupRouter(registrationHandler *rest.RegistrationHandler) *chi.Mux {
 
 		r.Route("/registrations", func(r chi.Router) {
 			r.Post("/", hexttp.Make(registrationHandler.Create))
+		})
+
+		r.Route("/roles", func(r chi.Router) {
+			r.Get("/", hexttp.Make(rolesHandler.RetrieveRoles))
+			r.Post("/", hexttp.Make(rolesHandler.CreateRole))
 		})
 	})
 
