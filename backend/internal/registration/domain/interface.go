@@ -14,8 +14,9 @@ type ParticipantRepository interface {
 }
 
 type ParticipantService interface {
-	RegisterParticipant(ctx context.Context, participant *Participant) (*Participant, error)
-	FindByNickname(ctx context.Context, nickname string) (*Participant, error)
+	Create(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Participant, error)
+	Persist(ctx context.Context, participant *Participant) (*Participant, error)
+	CheckNicknameAvailability(ctx context.Context, nickname string) error
 	AssignRoles(ctx context.Context, participant *Participant, roles []*Role) error
 	AssignTechnologies(ctx context.Context, participant *Participant, technologies []*Technology) error
 }

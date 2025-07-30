@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// Participant is the aggregate root representing a hackathon participant
 type Participant struct {
 	id              int
 	name            string
@@ -21,17 +20,15 @@ type Participant struct {
 }
 
 func NewParticipant(name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*Participant, error) {
-	// Validate name
+
 	if strings.TrimSpace(name) == "" {
 		return nil, errors.New("name cannot be empty")
 	}
 
-	// Validate nickname
 	if strings.TrimSpace(nickname) == "" {
 		return nil, errors.New("nickname cannot be empty")
 	}
 
-	// Validate email
 	email = strings.TrimSpace(email)
 	if email == "" {
 		return nil, errors.New("email cannot be empty")
@@ -40,12 +37,10 @@ func NewParticipant(name, nickname, email, region, projectIdea string, teamPrefe
 		return nil, errors.New("invalid email format")
 	}
 
-	// Validate region
 	if strings.TrimSpace(region) == "" {
 		return nil, errors.New("region cannot be empty")
 	}
 
-	// Validate project idea
 	if strings.TrimSpace(projectIdea) == "" {
 		return nil, errors.New("project idea cannot be empty")
 	}
@@ -62,13 +57,11 @@ func NewParticipant(name, nickname, email, region, projectIdea string, teamPrefe
 	}, nil
 }
 
-// isValidEmail validates email format using regex
 func isValidEmail(email string) bool {
 	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	return emailRegex.MatchString(email)
 }
 
-// Getters
 func (p *Participant) ID() int {
 	return p.id
 }
@@ -105,7 +98,6 @@ func (p *Participant) CreatedAt() time.Time {
 	return p.createdAt
 }
 
-// SetID is used by repository after persistence
 func (p *Participant) SetID(id int) error {
 	if id <= 0 {
 		return errors.New("id must be positive")
@@ -114,7 +106,6 @@ func (p *Participant) SetID(id int) error {
 	return nil
 }
 
-// SetCreatedAt is used by repository when loading from database
 func (p *Participant) SetCreatedAt(createdAt time.Time) {
 	p.createdAt = createdAt
 }

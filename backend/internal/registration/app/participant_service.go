@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
@@ -15,13 +16,31 @@ func NewParticipantService(participantRepository domain.ParticipantRepository) d
 	}
 }
 
-func (s *ParticipantService) RegisterParticipant(ctx context.Context, participant *domain.Participant) (*domain.Participant, error) {
+func (s *ParticipantService) Create(ctx context.Context, name, nickname, email, region, projectIdea string, teamPreference bool, desiredTeammate *string) (*domain.Participant, error) {
+	participant, err := domain.NewParticipant(name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
+	if err != nil {
+		return nil, err
+	}
 
-	return s.participantRepository.Save(ctx, participant)
+	return participant, nil
 }
 
-func (s *ParticipantService) FindByNickname(ctx context.Context, nickname string) (*domain.Participant, error) {
-	return s.participantRepository.FindByNickname(ctx, nickname)
+func (s *ParticipantService) CheckNicknameAvailability(ctx context.Context, nickname string) error {
+	existingParticipant, err := s.participantRepository.FindByNickname(ctx, nickname)
+	if err == nil && existingParticipant != nil {
+		return errors.New("nickname already taken")
+	}
+
+	return nil
+}
+
+func (s *ParticipantService) Persist(ctx context.Context, domainParticipant *domain.Participant) (*domain.Participant, error) {
+	persistedParticipant, err := s.participantRepository.Save(ctx, domainParticipant)
+	if err != nil {
+		return nil, err
+	}
+
+	return persistedParticipant, nil
 }
 
 func (s *ParticipantService) AssignRoles(ctx context.Context, participant *domain.Participant, roles []*domain.Role) error {

@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"errors"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
@@ -24,16 +23,21 @@ func NewRegistrationService(
 	}
 }
 
-func (s *RegistrationService) RegisterParticipant(
+func (s *RegistrationService) Create(
 	ctx context.Context,
 	name, nickname, email, region, projectIdea string,
 	teamPreference bool,
 	desiredTeammate *string,
 	roleIDs []int,
 	technologyIDs []int,
-) (*domain.Participant, error) {
+) (*domain.Registration, error) {
 
-	if err := s.checkNicknameAvailability(ctx, nickname); err != nil {
+	if err := s.participantService.CheckNicknameAvailability(ctx, nickname); err != nil {
+		return nil, err
+	}
+
+	participant, err := s.participantService.Create(ctx, name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
+	if err != nil {
 		return nil, err
 	}
 
@@ -47,31 +51,48 @@ func (s *RegistrationService) RegisterParticipant(
 		return nil, err
 	}
 
-	participant, err := domain.NewParticipant(name, nickname, email, region, projectIdea, teamPreference, desiredTeammate)
-	if err != nil {
-		return nil, err
-	}
-
-	savedParticipant, err := s.participantService.RegisterParticipant(ctx, participant)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := s.participantService.AssignRoles(ctx, savedParticipant, roles); err != nil {
-		return nil, err
-	}
-
-	if err := s.participantService.AssignTechnologies(ctx, savedParticipant, technologies); err != nil {
-		return nil, err
-	}
-
-	return savedParticipant, nil
+	return domain.NewRegistration(participant, roles, technologies)
 }
 
-func (s *RegistrationService) checkNicknameAvailability(ctx context.Context, nickname string) error {
-	existingParticipant, err := s.participantService.FindByNickname(ctx, nickname)
-	if err == nil && existingParticipant != nil {
-		return errors.New("nickname already taken")
+func (s *RegistrationService) Persist(ctx context.Context, registration *domain.Registration) (*domain.Registration, error) {
+
+	savedParticipant, err := s.participantService.Persist(ctx, registration.Participant())
+	if err != nil {
+		return nil, err
 	}
-	return nil
+
+	if err := s.participantService.AssignRoles(ctx, savedParticipant, registration.Roles()); err != nil {
+		return nil, err
+	}
+
+	if err := s.participantService.AssignTechnologies(ctx, savedParticipant, registration.Technologies()); err != nil {
+		return nil, err
+	}
+
+	completedRegistration, err := domain.NewRegistration(savedParticipant, registration.Roles(), registration.Technologies())
+	if err != nil {
+		return nil, err
+	}
+
+	completedRegistration.SetID(savedParticipant.ID())
+	completedRegistration.SetCreatedAt(savedParticipant.CreatedAt())
+
+	return completedRegistration, nil
+}
+
+func (s *RegistrationService) Register(
+	ctx context.Context,
+	name, nickname, email, region, projectIdea string,
+	teamPreference bool,
+	desiredTeammate *string,
+	roleIDs []int,
+	technologyIDs []int,
+) (*domain.Registration, error) {
+
+	registration, err := s.Create(ctx, name, nickname, email, region, projectIdea, teamPreference, desiredTeammate, roleIDs, technologyIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.Persist(ctx, registration)
 }
