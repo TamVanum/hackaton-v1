@@ -13,12 +13,10 @@ type Role struct {
 }
 
 func NewRole(name, description string) (*Role, error) {
-	// Validate name
 	if strings.TrimSpace(name) == "" {
 		return nil, errors.New("role name cannot be empty")
 	}
 
-	// Validate description
 	if strings.TrimSpace(description) == "" {
 		return nil, errors.New("role description cannot be empty")
 	}
@@ -29,7 +27,6 @@ func NewRole(name, description string) (*Role, error) {
 	}, nil
 }
 
-// Getters
 func (r *Role) ID() int {
 	return r.id
 }
@@ -42,7 +39,6 @@ func (r *Role) Description() string {
 	return r.description
 }
 
-// SetID is used by repository after persistence
 func (r *Role) SetID(id int) error {
 	if id <= 0 {
 		return errors.New("id must be positive")
@@ -51,7 +47,6 @@ func (r *Role) SetID(id int) error {
 	return nil
 }
 
-// GetDefaultRoles returns predefined roles for the hackathon
 func GetDefaultRoles() []*Role {
 	return []*Role{
 		{id: 1, name: "Frontend Developer", description: "Specializes in user interface and user experience development"},

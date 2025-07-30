@@ -16,11 +16,11 @@ func NewSqlTechnologyRepository(db *sql.DB) domain.TechnologyRepository {
 
 func (r *SqlTechnologyRepository) Save(ctx context.Context, technology *domain.Technology) (*domain.Technology, error) {
 	query := `
-		INSERT INTO technologies (name, description, category)
-		VALUES (?, ?, ?)
+		INSERT INTO technologies (name, description)
+		VALUES (?, ?)
 	`
 
-	result, err := r.db.ExecContext(ctx, query, technology.Name(), technology.Description(), technology.Category())
+	result, err := r.db.ExecContext(ctx, query, technology.Name(), technology.Description())
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (r *SqlTechnologyRepository) Save(ctx context.Context, technology *domain.T
 
 func (r *SqlTechnologyRepository) FindAll(ctx context.Context) ([]*domain.Technology, error) {
 	query := `
-		SELECT id, name, description, category
+		SELECT id, name, description
 		FROM technologies
 	`
 
@@ -51,14 +51,14 @@ func (r *SqlTechnologyRepository) FindAll(ctx context.Context) ([]*domain.Techno
 
 	for rows.Next() {
 		var id int
-		var name, description, category string
+		var name, description string
 
-		if err := rows.Scan(&id, &name, &description, &category); err != nil {
+		if err := rows.Scan(&id, &name, &description); err != nil {
 			return nil, err
 		}
 
 		// Create technology and set values
-		domainTechnology, err := domain.NewTechnology(name, description, category)
+		domainTechnology, err := domain.NewTechnology(name, description)
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +84,7 @@ func (r *SqlTechnologyRepository) FindByIDs(ctx context.Context, ids []int) ([]*
 	}
 
 	query := `
-		SELECT id, name, description, category
+		SELECT id, name, description
 		FROM technologies
 		WHERE id IN (` + placeholders[0]
 	for i := 1; i < len(placeholders); i++ {
@@ -102,14 +102,14 @@ func (r *SqlTechnologyRepository) FindByIDs(ctx context.Context, ids []int) ([]*
 
 	for rows.Next() {
 		var id int
-		var name, description, category string
+		var name, description string
 
-		if err := rows.Scan(&id, &name, &description, &category); err != nil {
+		if err := rows.Scan(&id, &name, &description); err != nil {
 			return nil, err
 		}
 
 		// Create technology and set values
-		domainTechnology, err := domain.NewTechnology(name, description, category)
+		domainTechnology, err := domain.NewTechnology(name, description)
 		if err != nil {
 			return nil, err
 		}

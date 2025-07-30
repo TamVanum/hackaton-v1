@@ -47,12 +47,14 @@ func createRegistrationsTable(db *sql.DB) error {
 
 	CREATE TABLE IF NOT EXISTS roles (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL UNIQUE
+		name TEXT NOT NULL UNIQUE,
+		description TEXT NOT NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS technologies (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL UNIQUE
+		name TEXT NOT NULL UNIQUE,
+		description TEXT NOT NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS registration_roles (

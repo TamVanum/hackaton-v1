@@ -2,7 +2,6 @@ package domain
 
 import (
 	"errors"
-	"regexp"
 	"strings"
 	"time"
 )
@@ -58,8 +57,7 @@ func NewParticipant(name, nickname, email, region, projectIdea string, teamPrefe
 }
 
 func isValidEmail(email string) bool {
-	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	return emailRegex.MatchString(email)
+	return true
 }
 
 func (p *Participant) ID() int {

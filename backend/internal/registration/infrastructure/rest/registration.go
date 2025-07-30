@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"hackathon-pvc-backend/internal/registration/app"
@@ -29,7 +30,8 @@ func (h *RegistrationHandler) Create(w http.ResponseWriter, r *http.Request) *he
 
 	registration, err := h.service.Create(r.Context(), req.Name, req.Email, req.Nickname, req.Region, req.ProjectIdea, req.TeamPreference, req.DesiredTeammate, req.RoleIDs, req.TechnologyIDs)
 	if err != nil {
-		return hexttp.InternalError(err.Error())
+		fmt.Println("Error creating registration:", err)
+		return hexttp.InternalError("Error creating registration")
 	}
 
 	return hexttp.Created(registration)
