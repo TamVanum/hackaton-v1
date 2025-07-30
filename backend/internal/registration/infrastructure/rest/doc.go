@@ -1,7 +1,5 @@
 package rest
 
-import "hackathon-pvc-backend/internal/registration/domain"
-
 type CreateRegistrationRequest struct {
 	Name            string  `json:"name" binding:"required"`
 	Email           string  `json:"email" binding:"required"`
@@ -15,17 +13,17 @@ type CreateRegistrationRequest struct {
 }
 
 type CreateRegistrationResponse struct {
-	ID              int                  `json:"id"`
-	Name            string               `json:"name"`
-	Nickname        string               `json:"nickname"`
-	Email           string               `json:"email"`
-	Region          string               `json:"region"`
-	ProjectIdea     string               `json:"project_idea"`
-	TeamPreference  bool                 `json:"team_preference"`
-	DesiredTeammate *string              `json:"desired_teammate,omitempty"`
-	RoleIDs         []*domain.Role       `json:"role_ids"`
-	TechnologyIDs   []*domain.Technology `json:"technology_ids"`
-	CreatedAt       string               `json:"created_at"`
+	ID              int                        `json:"id"`
+	Name            string                     `json:"name"`
+	Nickname        string                     `json:"nickname"`
+	Email           string                     `json:"email"`
+	Region          string                     `json:"region"`
+	ProjectIdea     string                     `json:"project_idea"`
+	TeamPreference  bool                       `json:"team_preference"`
+	DesiredTeammate *string                    `json:"desired_teammate,omitempty"`
+	RoleIDs         []CreateRoleResponse       `json:"role_ids"`
+	TechnologyIDs   []CreateTechnologyResponse `json:"technology_ids"`
+	CreatedAt       string                     `json:"created_at"`
 }
 
 type CreateRoleRequest struct {

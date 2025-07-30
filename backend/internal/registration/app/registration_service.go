@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
@@ -31,7 +32,7 @@ func (s *RegistrationService) Create(
 	roleIDs []int,
 	technologyIDs []int,
 ) (*domain.Registration, error) {
-
+	fmt.Println("Create")
 	if err := s.participantService.CheckNicknameAvailability(ctx, nickname); err != nil {
 		return nil, err
 	}
@@ -55,11 +56,13 @@ func (s *RegistrationService) Create(
 }
 
 func (s *RegistrationService) Persist(ctx context.Context, registration *domain.Registration) (*domain.Registration, error) {
-
+	fmt.Println("registration adasdsaasdasd")
 	savedParticipant, err := s.participantService.Persist(ctx, registration.Participant())
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("savedParticipant", savedParticipant.CreatedAt())
 
 	if err := s.participantService.AssignRoles(ctx, savedParticipant, registration.Roles()); err != nil {
 		return nil, err
@@ -88,11 +91,16 @@ func (s *RegistrationService) Register(
 	roleIDs []int,
 	technologyIDs []int,
 ) (*domain.Registration, error) {
-
+	fmt.Println("Register")
 	registration, err := s.Create(ctx, name, nickname, email, region, projectIdea, teamPreference, desiredTeammate, roleIDs, technologyIDs)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.Persist(ctx, registration)
+	persistedRegistration, err := s.Persist(ctx, registration)
+	if err != nil {
+		return nil, err
+	}
+
+	return persistedRegistration, nil
 }

@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"hackathon-pvc-backend/internal/registration/domain"
 )
 
@@ -40,6 +41,7 @@ func (s *ParticipantService) Persist(ctx context.Context, domainParticipant *dom
 		return nil, err
 	}
 
+	fmt.Println("persistedParticipant", persistedParticipant)
 	return persistedParticipant, nil
 }
 

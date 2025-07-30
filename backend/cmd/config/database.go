@@ -18,7 +18,7 @@ func InitDatabase() (*sql.DB, error) {
 		return nil, err
 	}
 
-	if err := createRegistrationsTable(db); err != nil {
+	if err := createSQLiteDatabase(db); err != nil {
 		return nil, err
 	}
 
@@ -26,12 +26,12 @@ func InitDatabase() (*sql.DB, error) {
 	return db, nil
 }
 
-func createRegistrationsTable(db *sql.DB) error {
+func createSQLiteDatabase(db *sql.DB) error {
 	query := `
-	CREATE TABLE IF NOT EXISTS registrations (
+	CREATE TABLE IF NOT EXISTS participants (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT NOT NULL,
-		nickname TEXT NOT NULL UNIQUE,
+		nickname TEXT NOT NULL,
 		email TEXT NOT NULL,
 		region TEXT NOT NULL,
 		project_idea TEXT NOT NULL,
@@ -40,33 +40,33 @@ func createRegistrationsTable(db *sql.DB) error {
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 	
-	CREATE INDEX IF NOT EXISTS idx_email ON registrations(email);
-	CREATE INDEX IF NOT EXISTS idx_nickname ON registrations(nickname);
-	CREATE INDEX IF NOT EXISTS idx_region ON registrations(region);
-	CREATE INDEX IF NOT EXISTS idx_created_at ON registrations(created_at);
+	CREATE INDEX IF NOT EXISTS idx_email ON participants(email);
+	CREATE INDEX IF NOT EXISTS idx_nickname ON participants(nickname);
+	CREATE INDEX IF NOT EXISTS idx_region ON participants(region);
+	CREATE INDEX IF NOT EXISTS idx_created_at ON participants(created_at);
 
 	CREATE TABLE IF NOT EXISTS roles (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL UNIQUE,
+		name TEXT NOT NULL,
 		description TEXT NOT NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS technologies (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL UNIQUE,
+		name TEXT NOT NULL,
 		description TEXT NOT NULL
 	);
 
-	CREATE TABLE IF NOT EXISTS registration_roles (
-		registration_id INTEGER NOT NULL,
+	CREATE TABLE IF NOT EXISTS participant_roles (
+		participant_id INTEGER NOT NULL,
 		role_id INTEGER NOT NULL,
-		PRIMARY KEY (registration_id, role_id)
+		PRIMARY KEY (participant_id, role_id)
 	);
 
-	CREATE TABLE IF NOT EXISTS registration_technologies (
-		registration_id INTEGER NOT NULL,
+	CREATE TABLE IF NOT EXISTS participant_technologies (
+		participant_id INTEGER NOT NULL,
 		technology_id INTEGER NOT NULL,
-		PRIMARY KEY (registration_id, technology_id)
+		PRIMARY KEY (participant_id, technology_id)
 	);
 	`
 
