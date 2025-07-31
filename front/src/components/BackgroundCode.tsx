@@ -64,14 +64,14 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
       // Initial random opacity
       const randomOpacity = opacityLevels[Math.floor(Math.random() * opacityLevels.length)]
       
-      lineElement.className = `absolute whitespace-nowrap ${randomOpacity} font-mono text-sm select-none pointer-events-none transition-all duration-2000 ease-in-out`
+      lineElement.className = `absolute whitespace-nowrap ${randomOpacity} font-mono text-sm select-none pointer-events-none transition-all duration-3000 ease-in-out`
       lineElement.style.top = `${i * 25}px`
       lineElement.style.left = '0'
       lineElement.style.transform = `translateX(${(i % 2 === 0 ? 0 : -200)}px)`
       lineElement.textContent = codeLine
       
       // Add animation
-      lineElement.style.animation = `scrollCode ${60 + (i % 5) * 10}s linear infinite`
+      lineElement.style.animation = `scrollCode ${100 + (i % 5) * 20}s linear infinite`
       
       lines.push(lineElement)
       container.appendChild(lineElement)
@@ -91,8 +91,8 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
       })
     }
 
-    // Change opacity every 5 seconds
-    const opacityInterval = setInterval(changeOpacity, 5000)
+    // Change opacity every 8 seconds
+    const opacityInterval = setInterval(changeOpacity, 8000)
 
     // Add CSS animation
     const style = document.createElement('style')
