@@ -7,7 +7,7 @@ function App() {
   const [messages, setMessages] = useState<{ msg: string }[]>([])
   const [showHack, setShowHack] = useState(false)
   const [showTextRelocated, setShowTextRelocated] = useState(false)
-
+  const [showInfo, setShowInfo] = useState(false)
   const fallBackData = [{ "msg": "Bienvenido hijo de tu pta verga, a la vrga prro (╯°□°)╯︵ ┻━┻" }, { "msg": "Me relajo prro, me vine muy arriba, es que esto esta muy brigido ┬─┻ノ( º _ ºノ)" }, { "msg": "Ya con esto me retiro, como un campeon, valio todo la pena 😎" }, { "msg": "Se cierra el estadio señores 🏟️" }, { "msg": "A mimir 😴" }]
 
   useEffect(() => {
@@ -28,6 +28,14 @@ function App() {
       setShowHack(true)
       setShowTextRelocated(true)
     }, 4000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowInfo(true)
+    }, 4500)
 
     return () => clearTimeout(timer)
   }, [])
@@ -159,6 +167,20 @@ function App() {
                     </h2>
                   </motion.div>
                 )}
+                <AnimatePresence mode="wait">
+                  {showInfo && (
+                    <motion.div
+                      key="hack"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <h2 className="mr-1 text-lg md:text-xl lg:text-xl xl:text-xl text-green-400 font-extrabold text-right tracking-wider">
+                      (╯°□°)╯︵ ┻━┻ 21-22.oct
+                      </h2>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </AnimatePresence>
             </motion.div>
           </div>

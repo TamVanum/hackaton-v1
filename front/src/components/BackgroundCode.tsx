@@ -26,11 +26,13 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
       
       // More Go
       'go func() { for range time.Tick(1*time.Second) { fmt.Println("hack") } }()',
-      'if err != nil { log.Fatal(err) }',
+      '(╯°□°)╯︵ ┻━┻',
+
       
       // More Python
       'data = [x**2 for x in range(100) if x % 2 == 0]',
       '@decorator def hack_function(): return "legendary"',
+      '(╯°□°)╯︵ ┻━┻',
       
       // C for Arduino
       'void setup() { pinMode(LED_BUILTIN, OUTPUT); Serial.begin(9600); }',
