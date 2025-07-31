@@ -22,7 +22,25 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
       'const matrix = Array.from({length: 1000}, () => Math.random());',
       'while(true) { code(); debug(); celebrate(); }',
       'export default function Innovation() { return <Future />; }',
-      'git commit -m "Another day, another breakthrough";'
+      'git commit -m "Another day, another breakthrough";',
+      
+      // More Go
+      'go func() { for range time.Tick(1*time.Second) { fmt.Println("hack") } }()',
+      'if err != nil { log.Fatal(err) }',
+      
+      // More Python
+      'data = [x**2 for x in range(100) if x % 2 == 0]',
+      '@decorator def hack_function(): return "legendary"',
+      
+      // C for Arduino
+      'void setup() { pinMode(LED_BUILTIN, OUTPUT); Serial.begin(9600); }',
+      'digitalWrite(13, HIGH); delay(1000); digitalWrite(13, LOW);',
+      'int sensor = analogRead(A0); Serial.println(sensor);',
+      
+      // Frontend
+      'const [state, setState] = useState("hacking"); useEffect(() => { hack(); }, []);',
+      'fetch("/api/hack").then(res => res.json()).then(data => console.log(data));',
+      'document.querySelector(".hack").addEventListener("click", () => { animate(); });'
     ]
 
     // Create the repeating code line
