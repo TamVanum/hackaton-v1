@@ -53,9 +53,9 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
 
     const codeLine = createCodeLine()
     
-    // Create multiple lines to fill the screen
+    // Create multiple lines to fill 98% of the screen
     const lines: HTMLDivElement[] = []
-    const numberOfLines = Math.ceil(window.innerHeight / 25) + 5 // 25px line height with extra lines
+    const numberOfLines = Math.ceil((window.innerHeight * 0.98) / 25) + 5 // 25px line height with extra lines
 
     // Opacity levels for variety
     const opacityLevels = ['text-green-900/20', 'text-green-900/30', 'text-green-900/50', 'text-green-900/70', 'text-green-900/80']
@@ -79,9 +79,30 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
       container.appendChild(lineElement)
     }
 
-    // Function to randomly change opacity of all lines
+    // Add 4 fade-out lines at the bottom for smooth disappearing effect
+    const fadeOpacities = ['text-green-900/60', 'text-green-900/40', 'text-green-900/20', 'text-green-900/5']
+    
+    for (let i = 0; i < 4; i++) {
+      const fadeLineElement = document.createElement('div')
+      
+      fadeLineElement.className = `absolute whitespace-nowrap ${fadeOpacities[i]} font-mono text-sm select-none pointer-events-none transition-all duration-3000 ease-in-out`
+      fadeLineElement.style.top = `${(numberOfLines + i) * 25}px`
+      fadeLineElement.style.left = '0'
+      fadeLineElement.style.transform = `translateX(${((numberOfLines + i) % 2 === 0 ? 0 : -200)}px)`
+      fadeLineElement.textContent = codeLine
+      
+      // Add animation
+      fadeLineElement.style.animation = `scrollCode ${100 + ((numberOfLines + i) % 5) * 20}s linear infinite`
+      
+      lines.push(fadeLineElement)
+      container.appendChild(fadeLineElement)
+    }
+
+    // Function to randomly change opacity of main lines (excluding fade-out lines)
     const changeOpacity = () => {
-      lines.forEach(line => {
+      // Only change opacity for the main lines (not the last 4 fade-out lines)
+      const mainLines = lines.slice(0, numberOfLines)
+      mainLines.forEach(line => {
         // Remove all current opacity classes
         opacityLevels.forEach(opacity => {
           line.classList.remove(opacity)
@@ -127,8 +148,11 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
-      style={{ zIndex: -10 }}
+      className={`absolute top-0 left-0 right-0 overflow-hidden pointer-events-none ${className}`}
+      style={{ 
+        zIndex: -10,
+        height: '98%'
+      }}
     />
   )
 }
