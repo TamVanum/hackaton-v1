@@ -4,7 +4,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useState, useRef, useEffect } from 'react'
 
 
-function CodeEditor({ code}: { code: string }) {
+function CodeEditor({ code }: { code: string }) {
 
   return (
     <div className="relative">
@@ -33,7 +33,15 @@ function CodeEditor({ code}: { code: string }) {
   )
 }
 
-function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => void }) {
+function InteractiveTerminal({
+  onCommandSuccess,
+  failedAttempts,
+  setFailedAttempts
+}: {
+  onCommandSuccess: () => void
+  failedAttempts: number
+  setFailedAttempts: (attempts: number) => void
+}) {
   const [command, setCommand] = useState('')
   const [commandHistory, setCommandHistory] = useState<string[]>([
     '$ tree',
@@ -42,7 +50,6 @@ function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => voi
     '',
     '1 directory, 1 file'
   ])
-  const [failedAttempts, setFailedAttempts] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const validCommands = [
@@ -72,10 +79,10 @@ function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => voi
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (command.trim()) {
       const newHistory = [...commandHistory, `$ ${command}`]
-      
+
       if (validCommands.includes(command.trim())) {
         newHistory.push('Opening comisteichon/hack.js...')
         setCommandHistory(newHistory)
@@ -87,9 +94,9 @@ function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => voi
       } else {
         const newFailedAttempts = failedAttempts + 1
         setFailedAttempts(newFailedAttempts)
-        
+
         newHistory.push(`Command not found: ${command}`)
-        
+
         // Progressive hints based on number of failed attempts
         if (newFailedAttempts === 1) {
           newHistory.push('pista: intenta abrir el archivo hack.js')
@@ -98,7 +105,7 @@ function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => voi
         } else if (newFailedAttempts >= 3) {
           newHistory.push('pista: el wn perkin, escribe esto code comisteichon/hack')
         }
-        
+
         setCommandHistory(newHistory)
         setCommand('')
       }
@@ -106,20 +113,20 @@ function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => voi
   }
 
   return (
-    <div className="bg-black text-green-400 p-6 rounded-lg font-mono text-sm min-h-[200px] max-w-2xl mx-auto">
+    <div className="text-green-400 font-mono text-sm">
       <div className="mb-4">
         <div className="text-green-300 mb-2">comisteichon@hackathon:~$</div>
         <div className="text-gray-400 text-xs mb-4">
           Enter a command to open the hackathon file...
         </div>
       </div>
-      
+
       {commandHistory.map((line, index) => (
         <div key={index} className="mb-1">
           {line}
         </div>
       ))}
-      
+
       <form onSubmit={handleSubmit} className="flex items-center">
         <span className="text-green-300 mr-2">$</span>
         <input
@@ -137,6 +144,25 @@ function InteractiveTerminal({ onCommandSuccess }: { onCommandSuccess: () => voi
 
 export default function About() {
   const [showCodeEditor, setShowCodeEditor] = useState(false)
+  const [failedAttempts, setFailedAttempts] = useState(0)
+
+  // Function to get the current image based on state
+  const getCurrentImage = () => {
+    if (showCodeEditor) {
+      return '/about/succes.png'
+    }
+
+    switch (failedAttempts) {
+      case 0:
+        return '/about/about.png'
+      case 1:
+        return '/about/fail-1.png'
+      case 2:
+        return '/about/fail-2.png'
+      default:
+        return '/about/fail-3.png'
+    }
+  }
 
   const codeContent = `// COMISTEICHON HACK 2025 🌭
 // ============================
@@ -173,32 +199,52 @@ const hackathonInfo = {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="w-1/2 flex items-center justify-center px-8"
+          className="w-1/2 flex items-center justify-center px-8  md:ml-40 lg:ml-40"
         >
           <div className="w-full max-w-4xl">
             {!showCodeEditor ? (
               <div>
-                <h3 className="text-5xl font-bold text-white mb-8 text-center">
-                  Interactive Terminal
+                <h3 className="text-2xl font-mono text-green-400 mb-6">
+                  COMISTERMINAL 🌭
                 </h3>
-                <InteractiveTerminal onCommandSuccess={() => setShowCodeEditor(true)} />
+                <div className="bg-[#1e1e1e] rounded-lg shadow-2xl overflow-hidden h-[550px] flex flex-col">
+                  <div className="bg-[#2d2d30] px-4 py-2 flex items-center space-x-2 flex-shrink-0">
+                    <div className="flex space-x-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span className="text-gray-400 text-sm ml-4">terminal</span>
+                  </div>
+
+                  <div className="p-4 overflow-y-auto min-w-[600px] flex-1">
+                    <InteractiveTerminal
+                      onCommandSuccess={() => setShowCodeEditor(true)}
+                      failedAttempts={failedAttempts}
+                      setFailedAttempts={setFailedAttempts}
+                    />
+                  </div>
+                </div>
               </div>
             ) : (
               <div>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-3xl font-bold text-white">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-mono text-green-400">
                     comisteichon/hack.js
                   </h3>
                   <button
-                    onClick={() => setShowCodeEditor(false)}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                    onClick={() => {
+                      setShowCodeEditor(false)
+                      setFailedAttempts(0) // Reset failed attempts when going back to terminal
+                    }}
+                    className="text-gray-400 hover:text-white transition-colors text-2xl font-mono"
                   >
                     ← Back to terminal
                   </button>
                 </div>
 
-                <div className="bg-[#1e1e1e] rounded-lg shadow-2xl overflow-hidden">
-                  <div className="bg-[#2d2d30] px-4 py-2 flex items-center space-x-2">
+                <div className="bg-[#1e1e1e] rounded-lg shadow-2xl overflow-hidden h-[550px] flex flex-col">
+                  <div className="bg-[#2d2d30] px-4 py-2 flex items-center space-x-2 flex-shrink-0">
                     <div className="flex space-x-2">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                       <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
@@ -207,7 +253,7 @@ const hackathonInfo = {
                     <span className="text-gray-400 text-sm ml-4">hack.js</span>
                   </div>
 
-                  <div className="p-4 overflow-y-auto min-w-[600px]">
+                  <div className="p-4 overflow-y-auto min-w-[600px] flex-1">
                     <CodeEditor code={codeContent} />
                   </div>
                 </div>
@@ -222,13 +268,20 @@ const hackathonInfo = {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
-          className="w-1/2 flex items-center justify-center px-8"
+          className="w-1/2 flex items-center justify-center px-8 md:mr-40 lg:mr-40"
         >
-          <img
-            src="/hasbik2.png"
-            alt="COMISTEICHON Event"
-            className="w-full max-w-lg object-contain"
-          />
+          <div className="w-[550px] h-[550px] flex items-center justify-center">
+            <img
+              key={getCurrentImage()}
+              src={getCurrentImage()}
+              alt="COMISTEICHON Event"
+              className="w-full h-full object-cover rounded-lg transition-all duration-500 ease-in-out"
+              style={{
+                maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)'
+              }}
+            />
+          </div>
         </motion.div>
       </div>
     </section>
