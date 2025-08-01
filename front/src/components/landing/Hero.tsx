@@ -75,13 +75,21 @@ export default function Hero() {
 
       <div className="relative h-screen">
         <div className='flex items-end justify-center h-screen'>
-          <img
-            className="relative z-10 mb-0 w-full max-w-[300px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[800px] object-contain"
-            src={"/hasbik2.png"}
-            width={800}
-            height={800}
-            alt="Imagen de ejemplo"
-          />
+          <div 
+            className="relative z-10 mb-0 w-full max-w-[300px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[800px]"
+            style={{
+              maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)'
+            }}
+          >
+            <img
+              className="w-full h-auto object-contain"
+              src={"/hasbik2.png"}
+              width={800}
+              height={800}
+              alt="Imagen de ejemplo"
+            />
+          </div>
         </div>
 
         <div className="absolute inset-0 flex items-center justify-center z-0 mb-20 sm:mb-40 md:mb-60 lg:mb-95">
@@ -188,6 +196,8 @@ export default function Hero() {
             </motion.div>
           </div>
         </div>
+
+
       </div>
     </div>
   )

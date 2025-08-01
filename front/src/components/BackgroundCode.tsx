@@ -53,9 +53,9 @@ export default function BackgroundCode({ className = '' }: BackgroundCodeProps) 
 
     const codeLine = createCodeLine()
     
-    // Create multiple lines to fill 95% of the screen
+    // Create multiple lines to fill 98% of the screen
     const lines: HTMLDivElement[] = []
-    const numberOfLines = Math.ceil((window.innerHeight * 0.95) / 25) + 5 // 25px line height with extra lines
+    const numberOfLines = Math.ceil((window.innerHeight * 0.98) / 25) + 5 // 25px line height with extra lines
 
     // Opacity levels for variety
     const opacityLevels = ['text-green-900/20', 'text-green-900/30', 'text-green-900/50', 'text-green-900/70', 'text-green-900/80']
