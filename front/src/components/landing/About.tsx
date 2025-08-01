@@ -88,11 +88,6 @@ function InteractiveTerminal({
     'nano hack',
   ]
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [])
 
   useEffect(() => {
     // Cleanup timeout on unmount
