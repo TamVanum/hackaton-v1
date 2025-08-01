@@ -36,11 +36,13 @@ function CodeEditor({ code }: { code: string }) {
 function InteractiveTerminal({
   onCommandSuccess,
   failedAttempts,
-  setFailedAttempts
+  setFailedAttempts,
+  setIsTyping
 }: {
   onCommandSuccess: () => void
   failedAttempts: number
   setFailedAttempts: (attempts: number) => void
+  setIsTyping: (typing: boolean) => void
 }) {
   const [command, setCommand] = useState('')
   const [commandHistory, setCommandHistory] = useState<string[]>([
@@ -51,6 +53,21 @@ function InteractiveTerminal({
     '1 directory, 1 file'
   ])
   const inputRef = useRef<HTMLInputElement>(null)
+  const typingTimeoutRef = useRef<number | null>(null)
+
+  const handleTyping = () => {
+    setIsTyping(true)
+    
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
+    
+    // Set typing back to false after 100ms
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false)
+    }, 100)
+  }
 
   const validCommands = [
     'code comisteichon/hack.js',
@@ -74,6 +91,15 @@ function InteractiveTerminal({
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()
+    }
+  }, [])
+
+  useEffect(() => {
+    // Cleanup timeout on unmount
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -133,7 +159,10 @@ function InteractiveTerminal({
           ref={inputRef}
           type="text"
           value={command}
-          onChange={(e) => setCommand(e.target.value)}
+          onChange={(e) => {
+            setCommand(e.target.value)
+            handleTyping()
+          }}
           className="bg-transparent outline-none flex-1 text-green-400 caret-green-400"
           placeholder="type your command here..."
         />
@@ -145,9 +174,14 @@ function InteractiveTerminal({
 export default function About() {
   const [showCodeEditor, setShowCodeEditor] = useState(false)
   const [failedAttempts, setFailedAttempts] = useState(0)
+  const [isTyping, setIsTyping] = useState(false)
 
   // Function to get the current image based on state
   const getCurrentImage = () => {
+    if (isTyping) {
+      return '/about/transition.png'
+    }
+    
     if (showCodeEditor) {
       return '/about/succes.png'
     }
@@ -222,6 +256,7 @@ const hackathonInfo = {
                       onCommandSuccess={() => setShowCodeEditor(true)}
                       failedAttempts={failedAttempts}
                       setFailedAttempts={setFailedAttempts}
+                      setIsTyping={setIsTyping}
                     />
                   </div>
                 </div>
